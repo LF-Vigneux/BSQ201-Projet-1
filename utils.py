@@ -9,7 +9,8 @@ from numpy.typing import NDArray
 
 
 def get_feature_vectors_and_labels(
-    path: str, dataset_name: str
+    dataset_name: str,
+    path: str = "",
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
     Reads the datasets from a file and divides the data into two matrices. The first one is the
@@ -17,8 +18,8 @@ def get_feature_vectors_and_labels(
     in the last column.
 
     Parameters:
-    - path (str): The relative path to the dataset file.
     - dataset_name (str): The name of the datasdet file including the extension.
+    - path (str): The relative path to the dataset file.
 
     Returns:
     Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the feature vectors
