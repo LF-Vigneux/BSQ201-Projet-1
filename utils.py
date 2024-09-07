@@ -7,9 +7,7 @@ import csv
 
 
 def get_feature_vectors_and_labels(
-    dataset_name: str,
-    extension: str = "npy",
-    path: str = "",
+    dataset_name: str, extension: str = "npy", path: str = "", rows_to_skip: int = 0
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
     Reads the datasets from a file and divides the data into two matrices. The first one is the
@@ -27,7 +25,7 @@ def get_feature_vectors_and_labels(
     """
     if extension == "csv":
         dataset = np.loadtxt(
-            path + dataset_name + "." + extension, delimiter=",", skiprows=1
+            path + dataset_name + "." + extension, delimiter=",", skiprows=rows_to_skip
         )
     else:
         dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)

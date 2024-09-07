@@ -9,7 +9,7 @@ def main(
     feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_period: int
 ):
 
-    num_qubits = 8
+    num_qubits = 4
 
     # To use the kernel_angle_embedding function correctly, you need to use a wrapper function with the number of qubits and the rotation gate to use
     rotation = "Y"
@@ -44,7 +44,7 @@ def main(
 
 if __name__ == "__main__":
     feature_vectors, labels = get_feature_vectors_and_labels(
-        "pulsar_stars", extension="csv", path="datasets/"
+        "HTRU_2", extension="csv", path="datasets/", rows_to_skip=0
     )
 
     # Réduire dataset, trop gros:
