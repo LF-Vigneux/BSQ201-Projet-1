@@ -1,9 +1,6 @@
 import pennylane as qml
-import matplotlib.pyplot as plt
+from pennylane import QNode
 import numpy as np
-from matplotlib import cm
-from sklearn.datasets import make_circles
-from sklearn.model_selection import train_test_split
 from typing import Tuple
 from numpy.typing import NDArray
 
@@ -26,7 +23,7 @@ def get_feature_vectors_and_labels(
                                                     - The vector of the set's labels
     """
     dataset = np.load(path + dataset_name, allow_pickle=True)
-    return dataset[:, :-1], dataset[:, -1]
+    return dataset[:, :-1], np.matrix.flatten(dataset[:, -1])
 
 
 def transform_vector_into_power_of_two_dim(a):
@@ -37,3 +34,12 @@ def transform_vector_into_power_of_two_dim(a):
         new_a[: len(a)] = a
         return new_a
     return a
+
+
+# Essayer peut etre avec lambda de specifier le nombre de qubits
+def get_qnode_instance(
+    embedding_circuit: callable,
+    num_qubits: int,
+) -> QNode:
+    dev = qml.device("default.qubit", wires=num_qubits)
+    return qml.QNode(embedding_circuit, dev)

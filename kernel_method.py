@@ -1,13 +1,23 @@
-import pennylane as qml
-import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import cm
-from sklearn.datasets import make_circles
-from sklearn.model_selection import train_test_split
-from typing import Tuple
+from sklearn.svm import SVC
 from numpy.typing import NDArray
-from utils import get_feature_vectors_and_labels
 
 
-def get_kernel_prediction():
-    pass
+def get_kernel_prediction(
+    qkernel: callable,
+    feature_vectors: NDArray[np.float_],
+    labels: NDArray[np.int_],
+    training_period: int,
+):
+    training_vectors = feature_vectors[:training_period, :]
+    testing_vecors = feature_vectors[training_period:, :]
+    training_labels = feature_vectors[:training_period]
+    testing_labels = feature_vectors[training_period:]
+
+    model = SVC(kernel=qkernel)
+    model.fit(training_vectors, training_labels)
+
+    score = model.score(testing_vecors, testing_labels)
+    predictions = model.predict(testing_vecors)
+
+    return score, predictions
