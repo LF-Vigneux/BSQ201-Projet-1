@@ -3,10 +3,12 @@ from pennylane import QNode
 import numpy as np
 from typing import Tuple
 from numpy.typing import NDArray
+import csv
 
 
 def get_feature_vectors_and_labels(
     dataset_name: str,
+    extension: str = "npy",
     path: str = "",
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
@@ -15,15 +17,22 @@ def get_feature_vectors_and_labels(
     in the last column.
 
     Parameters:
-    - dataset_name (str): The name of the datasdet file including the extension.
-    - path (str): The relative path to the dataset file.
+    - dataset_name (str): The name of the datasdet file without the extension.
+    - extension (str="npy"): The extension of the file of the dataset
+    - path (str=""): The relative path to the dataset file.
 
     Returns:
     Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the feature vectors
                                                     - The vector of the set's labels
     """
-    dataset = np.load(path + dataset_name, allow_pickle=True)
-    return dataset[:, :-1], np.matrix.flatten(dataset[:, -1])
+    if extension == "csv":
+        dataset = np.loadtxt(
+            path + dataset_name + "." + extension, delimiter=",", skiprows=1
+        )
+    else:
+        dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)
+
+    return dataset[:, :-1], dataset[:, -1]
 
 
 def transform_vector_into_power_of_two_dim(a):

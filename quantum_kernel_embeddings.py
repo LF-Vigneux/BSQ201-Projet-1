@@ -13,7 +13,7 @@ def angle_embedding(
             qml.RX(theta, wires=i % num_qubits)
         else:
             qml.RZ(theta, wires=i % num_qubits)
-    for i, theta in reversed(enumerate(b)):
+    for i, theta in enumerate(reversed(b)):
         if rotation == "Y":
             qml.adjoint(qml.RY(theta, wires=i % num_qubits))
         elif rotation == "X":

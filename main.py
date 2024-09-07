@@ -44,7 +44,7 @@ def main(
 if __name__ == "__main__":
     # Ecrire parametres du main
     feature_vectors, labels = get_feature_vectors_and_labels(
-        "pulsar_stars.csv", path="datasets/"
+        "pulsar_stars", extension="csv", path="datasets/"
     )
     training_period = int(len(labels) * 0.8)
     main(feature_vectors, labels, training_period)

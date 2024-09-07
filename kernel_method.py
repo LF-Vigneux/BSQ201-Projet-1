@@ -11,8 +11,8 @@ def get_kernel_prediction(
 ):
     training_vectors = feature_vectors[:training_period, :]
     testing_vecors = feature_vectors[training_period:, :]
-    training_labels = feature_vectors[:training_period]
-    testing_labels = feature_vectors[training_period:]
+    training_labels = labels[:training_period]
+    testing_labels = labels[training_period:]
 
     model = SVC(kernel=qkernel)
     model.fit(training_vectors, training_labels)
