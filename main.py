@@ -21,8 +21,9 @@ def main(
 
     circuit = get_qnode_instance(angle_embedding, num_qubits)
 
-    # The other embeddings in the quantum_kernel_embeddings file do not need those wrapper functions. Only one of the next line is needed.
+    # The other embeddings in the quantum_kernel_embeddings file do not need those wrapper functions. Only one of the next two lines is needed.
     # The number of qubits specified need to be coherent with the embedding stategy employed. See the embeddings functions descriptions for more details.
+
     # circuit = get_qnode_instance(quantum_kernel_embeddings.amplitude_embedding, num_qubits)
     # circuit = get_qnode_instance(quantum_kernel_embeddings.iqp_embedding, num_qubits)
 
