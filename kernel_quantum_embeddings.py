@@ -7,7 +7,7 @@ from sklearn.datasets import make_circles
 from sklearn.model_selection import train_test_split
 from typing import Tuple
 from numpy.typing import NDArray
-from utils import get_feature_vectors_and_labels
+from utils import get_feature_vectors_and_labels, transform_vector_into_power_of_two_dim
 
 
 # Essayer peut etre avec lambda de specifier le nombre de qubits
@@ -41,23 +41,27 @@ def kernel_angle_embedding(
 
 
 def amplitude_embedding(a, b):
-    num_qubits = np.ceil(np.log2(len(a)))
-    qubits = range(int(num_qubits))
-    qml.AmplitudeEmbedding(a, wires=qubits)
-    qml.adjoint(qml.AmplitudeEmbedding(b), wires=qubits)
+    new_a = transform_vector_into_power_of_two_dim(a)
+    new_b = transform_vector_into_power_of_two_dim(b)
+    num_qubits = int(np.log2(len(new_a)))
+    qubits = range(num_qubits)
+
+    qml.AmplitudeEmbedding(new_a, wires=qubits, normalize=True)
+    qml.adjoint(qml.AmplitudeEmbedding(new_b, wires=qubits, normalize=True))
     return qml.probs(wires=qubits)
 
 
-def iqb_embedding(a, b):
+def iqp_embedding(a, b):
     qubits = range(len(a))
     qml.IQPEmbedding(a, wires=qubits)
-    qml.adjoint(qml.IQPEmbedding(b), wires=qubits)
+    qml.adjoint(qml.IQPEmbedding(b, wires=qubits))
     return qml.probs(wires=qubits)
 
 
-def qkernel(A, B):
-    return np.array([[get_qnode_instance(a, b)[0] for b in B] for a in A])
+# La refaire pour appeler bonne finction, pas sur comment ça va bien marcher nécessairement
+def qkernel(A, B, qnode: QNode):
+    return np.array([[qnode(a, b)[0] for b in B] for a in A])
 
 
-test = get_qnode_instance(amplitude_embedding, 2)
-print(test((0, 0, 0, 1), (1, 0, 0, 0)))
+test = get_qnode_instance(iqp_embedding, 4)
+print(qml.draw(test)([0, 0, 0, 1], [1, 1, 0, 0]))

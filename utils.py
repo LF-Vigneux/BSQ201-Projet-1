@@ -27,3 +27,13 @@ def get_feature_vectors_and_labels(
     """
     dataset = np.load(path + dataset_name, allow_pickle=True)
     return dataset[:, :-1], dataset[:, -1]
+
+
+def transform_vector_into_power_of_two_dim(a):
+    if not np.log2(len(a)) % 1 == 0:
+        power_of_two = int(np.ceil(np.log2(len(a))))
+        new_dim = 2**power_of_two
+        new_a = np.zeros(new_dim)
+        new_a[: len(a)] = a
+        return new_a
+    return a
