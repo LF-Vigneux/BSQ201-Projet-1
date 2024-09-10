@@ -50,3 +50,13 @@ def get_qnode_instance(
 ) -> QNode:
     dev = qml.device("default.qubit", wires=num_qubits)
     return qml.QNode(embedding_circuit, dev)
+
+
+# Utiliser d'autres tests comme dans mon stage réservoir??? PAS MASE par contre
+def mean_square_error(predicted_label, expirement_labels):
+    total = 0
+    for true_value, predicted in zip(predicted_label, expirement_labels):
+        total += (
+            predicted - true_value
+        ) ** 2  # Juste des réels donc pas de norme right?
+    return total / (2 * len(predicted_label))

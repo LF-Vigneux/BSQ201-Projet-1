@@ -1,8 +1,15 @@
 import numpy as np
 from numpy.typing import NDArray
 from kernel_method import get_kernel_prediction
+from vqc_method import get_vqc_result
 import quantum_kernel_embeddings
 from utils import get_feature_vectors_and_labels, get_qnode_instance
+
+# Package à télécharger... Tout les optimiseurs sans gradients de Powell
+import pdfo
+from scipy.optimize import minimize, OptimizeResult, Bounds
+
+# À voir si SPSA ou PSO utile, utiliser optimizer.py de mon stage cet été.
 
 
 def main(
