@@ -7,6 +7,7 @@ from utils import get_feature_vectors_and_labels, get_qnode_instance
 
 # Package à télécharger... Tout les optimiseurs sans gradients de Powell
 import pdfo
+
 from scipy.optimize import minimize, OptimizeResult, Bounds
 
 # À voir si SPSA ou PSO utile, utiliser optimizer.py de mon stage cet été.

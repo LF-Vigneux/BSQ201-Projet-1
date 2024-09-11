@@ -1,6 +1,15 @@
 import numpy as np
 from sklearn.svm import SVC
 from numpy.typing import NDArray
+from utils import get_qnode_instance
+
+
+# Mettres les fonctions dans run
+class Quantum_Kernel_Classification:
+    def __init__(self, embedding_function: callable, num_qubits) -> None:
+        # opérations pour créer circuit total
+        # Trouver comment avoir le nombre de qubit du circuit
+        self.circuit = get_qnode_instance(embedding_function, num_qubits)
 
 
 def get_kernel_prediction(

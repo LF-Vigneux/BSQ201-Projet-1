@@ -3,9 +3,7 @@ import numpy as np
 from utils import transform_vector_into_power_of_two_dim
 
 
-def angle_embedding(
-    a, b, num_qubits: int = None, rotation: str = "Y"
-):  # Amplitude, juste pas game de tout changer le nom
+def angle_embedding(a, b, num_qubits: int = None, rotation: str = "Y"):
     for i, theta in enumerate(a):
         if rotation == "Y":
             qml.RY(theta, wires=i % num_qubits)
