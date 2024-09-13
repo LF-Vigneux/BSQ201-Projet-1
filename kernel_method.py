@@ -1,4 +1,5 @@
 import numpy as np
+import pennylane as qml
 from sklearn.svm import SVC
 from numpy.typing import NDArray
 from utils import get_qnode_instance
@@ -30,3 +31,9 @@ def get_kernel_prediction(
     predictions = model.predict(testing_vecors)
 
     return score, predictions
+
+
+def get_kernel_embedding(a, b, embedding_circuit: callable, num_qubits: int):
+    embedding_circuit(a)
+    qml.adjoint(embedding_circuit(b))
+    return qml.probs(wires=num_qubits)

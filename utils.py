@@ -3,6 +3,7 @@ from pennylane import QNode
 import numpy as np
 from typing import Tuple
 from numpy.typing import NDArray
+from scipy.special import softmax
 import csv
 
 
@@ -29,6 +30,8 @@ def get_feature_vectors_and_labels(
         )
     else:
         dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)
+
+    dataset = softmax(dataset) * np.pi  # Mets les données entre 0 et pi
 
     return dataset[:, :-1], dataset[:, -1]
 
