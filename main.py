@@ -1,11 +1,9 @@
 import numpy as np
 from numpy.typing import NDArray
-from kernel_method import get_kernel_prediction, get_kernel_embedding
+from kernel_method import Quantum_Kernel_Classification
 from vqc_method import get_vqc_result
 import quantum_embeddings
-from utils import get_feature_vectors_and_labels, get_qnode_instance
-
-import pennylane as qml
+from utils import get_feature_vectors_and_labels
 
 from pennylane.templates import RandomLayers  # QCNN
 
@@ -18,7 +16,7 @@ from scipy.optimize import minimize, OptimizeResult, Bounds
 
 
 def main(
-    feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_period: int
+    feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_ratio: int
 ):
 
     num_qubits = 4
@@ -31,25 +29,21 @@ def main(
             a, num_qubits=num_qubits, rotation=rotation
         )
 
-    # The other embeddings in the quantum_kernel_embeddings file do not need those wrapper functions. You only need to chose the correct e,mbedding in the line below.
-    ########EN CLASSES ÇA VA ËTRE PLUS CLEAN
+    """
+    The class is then called, the number of qubits need to be coherent with the embedding:
+    angle_embedding: no qubits restrictions
+    amplitude_embedding: qubits muste be the base two log of the input. This number must be rounded up to the next integer
+    iqp_embedding: The number of qubits must be the same as the number of features
+    """
+    kernel_qml = Quantum_Kernel_Classification(angle_embedding, num_qubits)
+    # kernel_qml=Quantum_Kernel_Classification(quantum_embeddings.amplitude_embedding,num_qubits)
+    # kernel_qml=Quantum_Kernel_Classification(quantum_embeddings.iqp_embedding,num_qubits)
 
-    def kernel_embedding(a, b):
-        return get_kernel_embedding(a, b, angle_embedding, num_qubits)
-        # return get_kernel_embedding(a,b,quantum_embeddings.amplitude_embedding,num_qubits)
-        # return get_kernel_embedding(a,b,quantum_embeddings.iqp_embedding,num_qubits)
-
-    # À voir s'il serait mieux de faire une classe et juste de l'appeler, aurait directv accès au qnode. PT mélanger avec le embedding, on le choisi et on fait juste plug le calable dedans.
-    # Comme ça qnode instance appelé dans la classe... à voir PT même classes au lieu de fonctions d'embedding. Comme ça direct accès nombre de qubits, pas nombre cohérent avec QNode
-
-    circuit = get_qnode_instance(kernel_embedding, num_qubits)
-
-    def qkernel(A, B):
-        return np.array([[circuit(a, b)[0] for b in B] for a in A])
-
-    score, predictions = get_kernel_prediction(
-        qkernel, feature_vectors, labels, training_period
+    score, predictions = kernel_qml.run(
+        feature_vectors, labels, training_ratio=training_ratio
     )
+
+    training_period = int(len(labels) * 0.8)
 
     print("The score of the kernel: ", score)
     print("The predictions of the labels: ", predictions)
@@ -62,8 +56,11 @@ if __name__ == "__main__":
     )
 
     # Réduire dataset, trop gros:
-    feature_vectors = feature_vectors[1962:2462, :]
-    labels = labels[1962:2462]
+    feature_vectors = feature_vectors[1949:2049, :]
+    labels = labels[1949:2049]
 
-    training_period = int(len(labels) * 0.8)
-    main(feature_vectors, labels, training_period)
+    unique, counts = np.unique(labels, return_counts=True)
+    print(dict(zip(unique, counts)))
+
+    training_ratio = 0.8
+    main(feature_vectors, labels, training_ratio)

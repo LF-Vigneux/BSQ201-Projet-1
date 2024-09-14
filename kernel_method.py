@@ -7,33 +7,39 @@ from utils import get_qnode_instance
 
 # Mettres les fonctions dans run
 class Quantum_Kernel_Classification:
-    def __init__(self, embedding_function: callable, num_qubits) -> None:
-        # opérations pour créer circuit total
-        # Trouver comment avoir le nombre de qubit du circuit
-        self.circuit = get_qnode_instance(embedding_function, num_qubits)
+    def __init__(self, embedding_circuit: callable, num_qubits) -> None:
+        self.embedding = embedding_circuit
+        self.num_qubits = num_qubits
+        self.kernel_circuit = get_qnode_instance(
+            self.get_kernel_embedding, self.num_qubits
+        )
 
+    def run(
+        self,
+        feature_vectors: NDArray[np.float_],
+        labels: NDArray[np.float_],
+        training_ratio: float = 0.8,
+        svm=SVC,
+    ):
+        def qkernel(A, B):
+            return np.array([[self.kernel_circuit(a, b)[0] for b in B] for a in A])
 
-def get_kernel_prediction(
-    qkernel: callable,
-    feature_vectors: NDArray[np.float_],
-    labels: NDArray[np.int_],
-    training_period: int,
-):
-    training_vectors = feature_vectors[:training_period, :]
-    testing_vecors = feature_vectors[training_period:, :]
-    training_labels = labels[:training_period]
-    testing_labels = labels[training_period:]
+        training_period = int(training_ratio * len(labels))
 
-    model = SVC(kernel=qkernel)
-    model.fit(training_vectors, training_labels)
+        training_vectors = feature_vectors[:training_period, :]
+        testing_vecors = feature_vectors[training_period:, :]
+        training_labels = labels[:training_period]
+        testing_labels = labels[training_period:]
 
-    score = model.score(testing_vecors, testing_labels)
-    predictions = model.predict(testing_vecors)
+        model = svm(kernel=qkernel)
+        model.fit(training_vectors, training_labels)
 
-    return score, predictions
+        score = model.score(testing_vecors, testing_labels)
+        predictions = model.predict(testing_vecors)
 
+        return score, predictions
 
-def get_kernel_embedding(a, b, embedding_circuit: callable, num_qubits: int):
-    embedding_circuit(a)
-    qml.adjoint(embedding_circuit(b))
-    return qml.probs(wires=num_qubits)
+    def get_kernel_embedding(self, a, b):
+        self.embedding(a)
+        qml.adjoint(self.embedding)(b)
+        return qml.probs(wires=self.num_qubits)

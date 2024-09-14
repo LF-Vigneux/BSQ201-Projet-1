@@ -31,9 +31,8 @@ def get_feature_vectors_and_labels(
     else:
         dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)
 
-    dataset = softmax(dataset) * np.pi  # Mets les données entre 0 et pi
-
-    return dataset[:, :-1], dataset[:, -1]
+    # Soft max mais les données entre 0 et pi
+    return softmax(dataset[:, :-1]) * np.pi, dataset[:, -1]
 
 
 def transform_vector_into_power_of_two_dim(a):

@@ -6,11 +6,11 @@ from utils import transform_vector_into_power_of_two_dim
 def angle_embedding(a, num_qubits: int = None, rotation: str = "Y"):
     for i, theta in enumerate(a):
         if rotation == "Y":
-            qml.RY(theta, wires=i % num_qubits)
+            qml.RY(theta, wires=(i % num_qubits))
         elif rotation == "X":
-            qml.RX(theta, wires=i % num_qubits)
+            qml.RX(theta, wires=(i % num_qubits))
         else:
-            qml.RZ(theta, wires=i % num_qubits)
+            qml.RZ(theta, wires=(i % num_qubits))
 
 
 def amplitude_embedding(a, b):
