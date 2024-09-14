@@ -59,8 +59,5 @@ if __name__ == "__main__":
     feature_vectors = feature_vectors[1949:2049, :]
     labels = labels[1949:2049]
 
-    unique, counts = np.unique(labels, return_counts=True)
-    print(dict(zip(unique, counts)))
-
     training_ratio = 0.8
     main(feature_vectors, labels, training_ratio)

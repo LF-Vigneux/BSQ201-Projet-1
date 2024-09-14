@@ -7,7 +7,7 @@ from utils import get_qnode_instance
 
 # Mettres les fonctions dans run
 class Quantum_Kernel_Classification:
-    def __init__(self, embedding_circuit: callable, num_qubits) -> None:
+    def __init__(self, embedding_circuit: callable, num_qubits: int) -> None:
         self.embedding = embedding_circuit
         self.num_qubits = num_qubits
         self.kernel_circuit = get_qnode_instance(
@@ -42,4 +42,4 @@ class Quantum_Kernel_Classification:
     def get_kernel_embedding(self, a, b):
         self.embedding(a)
         qml.adjoint(self.embedding)(b)
-        return qml.probs(wires=self.num_qubits)
+        return qml.probs(wires=range(self.num_qubits))

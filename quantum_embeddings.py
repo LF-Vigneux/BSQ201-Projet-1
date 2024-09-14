@@ -13,7 +13,7 @@ def angle_embedding(a, num_qubits: int = None, rotation: str = "Y"):
             qml.RZ(theta, wires=(i % num_qubits))
 
 
-def amplitude_embedding(a, b):
+def amplitude_embedding(a):
     new_a = transform_vector_into_power_of_two_dim(a)
     num_qubits = int(np.log2(len(new_a)))
     qubits = range(num_qubits)
