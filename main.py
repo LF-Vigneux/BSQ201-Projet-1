@@ -4,7 +4,6 @@ from kernel_method import Quantum_Kernel_Classification
 from vqc_method import get_vqc_result
 import quantum_embeddings
 from utils import get_feature_vectors_and_labels
-
 from pennylane.templates import RandomLayers  # QCNN
 
 # Package à télécharger... Tout les optimiseurs sans gradients de Powell
@@ -19,7 +18,7 @@ def main(
     feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_ratio: int
 ):
 
-    num_qubits = 4
+    num_qubits = 8
 
     # To use the kernel_angle_embedding function correctly, you need to use a wrapper functions with the number of qubits and the rotation gate to use
     rotation = "Y"
@@ -34,10 +33,18 @@ def main(
     angle_embedding: no qubits restrictions
     amplitude_embedding: qubits muste be the base two log of the input. This number must be rounded up to the next integer
     iqp_embedding: The number of qubits must be the same as the number of features
+
+    The IQP and angle must be normalized in 0 to pi() and the others juste be normalized
     """
-    kernel_qml = Quantum_Kernel_Classification(angle_embedding, num_qubits)
-    # kernel_qml=Quantum_Kernel_Classification(quantum_embeddings.amplitude_embedding,num_qubits)
-    # kernel_qml=Quantum_Kernel_Classification(quantum_embeddings.iqp_embedding,num_qubits)
+    # feature_vectors = feature_vectors * np.pi
+    # kernel_qml = Quantum_Kernel_Classification(angle_embedding, num_qubits)
+    # kernel_qml = Quantum_Kernel_Classification(
+    #   quantum_embeddings.iqp_embedding, num_qubits
+    # )
+
+    kernel_qml = Quantum_Kernel_Classification(
+        quantum_embeddings.amplitude_embedding, num_qubits
+    )
 
     score, predictions = kernel_qml.run(
         feature_vectors, labels, training_ratio=training_ratio
@@ -56,8 +63,17 @@ if __name__ == "__main__":
     )
 
     # Réduire dataset, trop gros:
-    feature_vectors = feature_vectors[1949:2049, :]
-    labels = labels[1949:2049]
+    feature_vectors = feature_vectors[2000:2100, :]
+    labels = labels[2000:2100]
+    # normalize feature vectors
+    feature_vectors = np.array(
+        [
+            feature_vectors[i, :] / np.linalg.norm(feature_vectors[i, :])
+            for i in range(np.shape(feature_vectors)[0])
+        ]
+    )
+
+    print(np.where(labels == 1))
 
     training_ratio = 0.8
     main(feature_vectors, labels, training_ratio)

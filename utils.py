@@ -3,7 +3,7 @@ from pennylane import QNode
 import numpy as np
 from typing import Tuple
 from numpy.typing import NDArray
-from scipy.special import softmax
+
 import csv
 
 
@@ -32,7 +32,7 @@ def get_feature_vectors_and_labels(
         dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)
 
     # Soft max mais les données entre 0 et pi
-    return softmax(dataset[:, :-1]) * np.pi, dataset[:, -1]
+    return dataset[:, :-1], dataset[:, -1]
 
 
 def transform_vector_into_power_of_two_dim(a):

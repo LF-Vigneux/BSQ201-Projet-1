@@ -16,9 +16,8 @@ def angle_embedding(a, num_qubits: int = None, rotation: str = "Y"):
 def amplitude_embedding(a):
     new_a = transform_vector_into_power_of_two_dim(a)
     num_qubits = int(np.log2(len(new_a)))
-    qubits = range(num_qubits)
 
-    qml.AmplitudeEmbedding(new_a, wires=qubits, normalize=True)
+    qml.AmplitudeEmbedding(features=new_a, wires=range(num_qubits), normalize=True)
 
 
 def iqp_embedding(a):
