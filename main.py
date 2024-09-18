@@ -1,8 +1,9 @@
 import numpy as np
 from numpy.typing import NDArray
 from kernel_method import Quantum_Kernel_Classification
-from vqc_method import get_vqc_result
+from vqc_method import VQC_Solver
 import quantum_embeddings
+import quantum_ansatz
 from utils import get_feature_vectors_and_labels
 from pennylane.templates import RandomLayers  # QCNN
 
@@ -17,8 +18,8 @@ from scipy.optimize import minimize, OptimizeResult, Bounds
 def main(
     feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_ratio: int
 ):
-
     num_qubits = 8
+    """KERNELS"""
 
     # To use the kernel_angle_embedding function correctly, you need to use a wrapper functions with the number of qubits and the rotation gate to use
     rotation = "Y"
@@ -50,11 +51,36 @@ def main(
         feature_vectors, labels, training_ratio=training_ratio
     )
 
-    training_period = int(len(labels) * 0.8)
+    training_period = int(len(labels) * training_ratio)
 
     print("The score of the kernel: ", score)
     print("The predictions of the labels: ", predictions)
     print("The true value of the labels: ", labels[training_period:])
+
+    """""" """""" """""" """""" ""
+    """VQC"""
+    num_params_ansatz = "À remplir"
+    vqc = VQC_Solver(
+        quantum_embeddings.iqp_embedding,
+        quantum_ansatz.test,
+        num_params_ansatz,
+        num_qubits,
+    )
+
+    # The minimiser needs to have only the cost function and params as parameters
+    def minimisation(cost_function, params):
+        return minimize(cost_function, params, method="COBYLA")
+
+    score, predictions = vqc.run(
+        feature_vectors, labels, minimisation, training_ratio=training_ratio
+    )
+
+    print("The score of the VQC: ", score)
+    print("The predictions of the labels: ", predictions)
+    print("The true value of the labels: ", labels[training_period:])
+
+    """""" """""" """""" """"""
+    """QCNN"""
 
 
 if __name__ == "__main__":

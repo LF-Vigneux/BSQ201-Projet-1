@@ -1,14 +1,73 @@
 import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple
+import pennylane as qml
+from utils import get_qnode_instance, mean_square_error
 
 
-def get_vqc_result(
-    num_params: int, cost_function: callable, optimizer_function: callable
-) -> Tuple[float, NDArray[np.float_]]:
-    params = np.zeros(num_params)
-    params = optimizer_function(cost_function, params)
-    return cost_function(params), params
+class VQC_Solver:
+    def __init__(
+        self,
+        embedding_circuit: callable,
+        ansatz: callable,
+        num_params: int,
+        num_qubits: int,
+    ) -> None:
+        self.embedding = embedding_circuit
+        self.ansatz = ansatz
+        self.params = np.zeros(num_params)
+        self.num_qubits = num_qubits
 
+        self.circuit_to_optimize = get_qnode_instance(
+            self.create_vqc_circuit, self.num_qubits
+        )
 
-# Ce qu'il va manquer c'est juste créer le circuit et cost_function avec circuit complet et vqc duqeul on retourn le mean square error, fonction principale... à voir comment elle veut qu'on le fasse
+    def create_vqc_circuit(self, feature_vector, params):
+        self.embedding(feature_vector)
+        self.ansatz(params)
+        return qml.probs(wires=range(self.num_qubits))
+
+    def classification_function(probs_array):
+        if probs_array[0] > 0.5:
+            return 1
+        return 0
+
+    def run(
+        self,
+        feature_vectors: NDArray[np.float_],
+        labels: NDArray[np.float_],
+        optimizer_function: callable,
+        classification_function: callable = classification_function,
+        training_ratio: float = 0.8,
+    ):
+        training_period = int(training_ratio * len(labels))
+
+        training_vectors = feature_vectors[:training_period, :]
+        testing_vectors = feature_vectors[training_period:, :]
+        training_labels = labels[:training_period]
+        testing_labels = labels[training_period:]
+
+        predictions = np.empty_like(testing_labels)
+
+        def cost_function(
+            params,
+        ):  # À voir si on la sort de la classe et juste la donner
+            resulting_labels = np.empty_like(training_labels)
+            for i, training_vector in enumerate(training_vectors):
+                probs = self.circuit_to_optimize(training_vector, params)
+                resulting_labels[i] = classification_function(probs)
+            return mean_square_error(resulting_labels, training_labels)
+
+        self.params = optimizer_function(cost_function, self.params).x
+
+        for i, testing_vector in enumerate(testing_vectors):
+            predictions[i] = classification_function(
+                self.circuit_to_optimize(testing_vector, self.params)
+            )
+
+        score = 0
+        for pred, true_value in zip(predictions, labels[-len(predictions) :]):
+            if pred == true_value:
+                score += 1
+        score /= len(predictions)
+        return score, predictions
