@@ -2,6 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 from kernel_method import Quantum_Kernel_Classification
 from vqc_method import VQC_Solver
+from qcnn_method import QCNN_Solver
 import quantum_embeddings
 import quantum_ansatz
 from utils import get_feature_vectors_and_labels
@@ -81,6 +82,33 @@ def main(
 
     """""" """""" """""" """"""
     """QCNN"""
+    batches = 10
+
+    def convolution_circuit():
+        # À définir
+        pass
+
+    qcnn = QCNN_Solver(
+        quantum_embeddings.iqp_embedding, convolution_circuit, num_qubits
+    )
+
+    # The minimiser needs to have only the cost function and params as parameters
+    def minimisation(cost_function, params):
+        return minimize(
+            cost_function, params, method="COBYLA", options={"maxiter": batches}
+        )  # Jsp si maxiter va vraiment limiter le nombre d'évaluations de la fonction de coût, sinon utiliser un gradient descent plus facile
+
+    score, predictions = qcnn.run(
+        feature_vectors,
+        labels,
+        minimisation,
+        batched_data=(True, batches),
+        training_ratio=training_ratio,
+    )
+
+    print("The score of the QCNN: ", score)
+    print("The predictions of the labels: ", predictions)
+    print("The true value of the labels: ", labels[training_period:])
 
 
 if __name__ == "__main__":

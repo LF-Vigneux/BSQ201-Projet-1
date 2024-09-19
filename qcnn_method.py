@@ -5,7 +5,7 @@ import pennylane as qml
 from utils import get_qnode_instance, mean_square_error, get_score
 
 
-class QCNN_solver:
+class QCNN_Solver:
     def __init__(
         self,
         embedding_circuit: callable,
