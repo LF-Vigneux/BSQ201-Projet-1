@@ -47,11 +47,11 @@ def transform_vector_into_power_of_two_dim(a):
 
 # Essayer peut etre avec lambda de specifier le nombre de qubits
 def get_qnode_instance(
-    embedding_circuit: callable,
+    circuit_function: callable,
     num_qubits: int,
 ) -> QNode:
     dev = qml.device("default.qubit", wires=num_qubits)
-    return qml.QNode(embedding_circuit, dev)
+    return qml.QNode(circuit_function, dev)
 
 
 # Utiliser d'autres tests comme dans mon stage réservoir??? PAS MASE par contre
@@ -62,3 +62,12 @@ def mean_square_error(predicted_label, expirement_labels):
             predicted - true_value
         ) ** 2  # Juste des réels donc pas de norme right?
     return total / (2 * len(predicted_label))
+
+
+def get_score(prediction_labels, true_lables):
+    score = 0
+    for pred, true_value in zip(prediction_labels, true_lables):
+        if pred == true_value:
+            score += 1
+    score /= len(prediction_labels)
+    return score

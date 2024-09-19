@@ -2,7 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple
 import pennylane as qml
-from utils import get_qnode_instance, mean_square_error
+from utils import get_qnode_instance, mean_square_error, get_score
 
 
 class VQC_Solver:
@@ -49,6 +49,7 @@ class VQC_Solver:
 
         predictions = np.empty_like(testing_labels)
 
+        # Optimising the ansatz
         def cost_function(
             params,
         ):  # À voir si on la sort de la classe et juste la donner
@@ -60,14 +61,10 @@ class VQC_Solver:
 
         self.params = optimizer_function(cost_function, self.params).x
 
+        # Getting the predictions
         for i, testing_vector in enumerate(testing_vectors):
             predictions[i] = classification_function(
                 self.circuit_to_optimize(testing_vector, self.params)
             )
 
-        score = 0
-        for pred, true_value in zip(predictions, labels[-len(predictions) :]):
-            if pred == true_value:
-                score += 1
-        score /= len(predictions)
-        return score, predictions
+        return get_score(predictions, testing_labels), predictions
