@@ -22,12 +22,14 @@ class VQC_Solver:
             self.create_vqc_circuit, self.num_qubits
         )
 
-    def create_vqc_circuit(self, feature_vector, params):
+    def create_vqc_circuit(
+        self, feature_vector: NDArray[np.float_], params: NDArray[np.float_]
+    ):
         self.embedding(feature_vector)
         self.ansatz(params)
         return qml.probs(wires=range(self.num_qubits))
 
-    def classification_function(probs_array):
+    def classification_function(probs_array: NDArray[np.float_]):
         if probs_array[0] > 0.5:
             return 1
         return 0
@@ -38,6 +40,7 @@ class VQC_Solver:
         labels: NDArray[np.float_],
         optimizer_function: callable,
         classification_function: callable = classification_function,
+        error_function: callable = mean_square_error,
         training_ratio: float = 0.8,
     ):
         training_period = int(training_ratio * len(labels))
@@ -51,13 +54,13 @@ class VQC_Solver:
 
         # Optimising the ansatz
         def cost_function(
-            params,
-        ):  # À voir si on la sort de la classe et juste la donner
+            params: NDArray[np.float_],
+        ):
             resulting_labels = np.empty_like(training_labels)
             for i, training_vector in enumerate(training_vectors):
                 probs = self.circuit_to_optimize(training_vector, params)
                 resulting_labels[i] = classification_function(probs)
-            return mean_square_error(resulting_labels, training_labels)
+            return error_function(resulting_labels, training_labels)
 
         self.params = optimizer_function(cost_function, self.params).x
 

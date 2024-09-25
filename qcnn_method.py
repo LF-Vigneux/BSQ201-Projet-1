@@ -25,12 +25,14 @@ class QCNN_Solver:
     # General pooling function that works for even or odd number of bits, always filling with last qubit conneted with the first on the Cnot
     # If odd number of qubits, median qubit-> no operation
     def pool(self, old_size: int):
-        new_size = np.ceil(old_size / 2)
+        new_size = int(np.ceil(old_size / 2))
         for i in range(new_size, old_size):
             qml.CNOT(wires=(i, old_size - i - 1))
         return new_size
 
-    def generate_qcnn_circuit(self, feature_vector, params):
+    def generate_qcnn_circuit(
+        self, feature_vector: NDArray[np.float_], params: NDArray[np.float_]
+    ):
         self.num_params_utilized = 0  # petit test inutile
         num_qubits_utilized = self.num_qubits
         self.embedding(feature_vector)
@@ -38,14 +40,14 @@ class QCNN_Solver:
             self.num_params_utilized += self.convolution_circuit(
                 params[self.num_params_utilized :]
             )  # Comment savoir le nombre de paramètres, approche, donne tout et retourne le nombre d'utilisé...
-            num_qubits_utilized = self.pool(
-                num_qubits_utilized
-            )  # jsp si ça va marcher ça
+            # qml.Barrier(only_visual=True)   #Pour des tests
+            num_qubits_utilized = self.pool(num_qubits_utilized)
+            # qml.Barrier(only_visual=True)   #Pour des tests
             if num_qubits_utilized == 1:
                 break
         return qml.probs(wires=0)
 
-    def classification_function(probs_array):
+    def classification_function(probs_array: NDArray[np.float_]):
         if probs_array[0] > 0.5:
             return 1
         return 0
@@ -56,6 +58,7 @@ class QCNN_Solver:
         labels: NDArray[np.float_],
         optimizer_function: callable,
         classification_function: callable = classification_function,
+        error_function: callable = mean_square_error,
         batched_data: Tuple[bool, int] = (  # Faire le cas pas batched
             True,
             10,
@@ -93,7 +96,7 @@ class QCNN_Solver:
                 resulting_labels[i] = classification_function(probs)
 
             batch_number = batch_number + 1
-            return mean_square_error(
+            return error_function(
                 resulting_labels, training_labels
             )  # C'est comme la fonction de coût à voir si on la mets en param
 

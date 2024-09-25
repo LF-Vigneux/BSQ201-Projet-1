@@ -35,7 +35,7 @@ def get_feature_vectors_and_labels(
     return dataset[:, :-1], dataset[:, -1]
 
 
-def transform_vector_into_power_of_two_dim(a):
+def transform_vector_into_power_of_two_dim(a: NDArray[np.float_]):
     if not np.log2(len(a)) % 1 == 0:
         power_of_two = int(np.ceil(np.log2(len(a))))
         new_dim = 2**power_of_two
@@ -54,20 +54,32 @@ def get_qnode_instance(
     return qml.QNode(circuit_function, dev)
 
 
-# Utiliser d'autres tests comme dans mon stage réservoir??? PAS MASE par contre
-def mean_square_error(predicted_label, expirement_labels):
-    total = 0
-    for true_value, predicted in zip(predicted_label, expirement_labels):
-        total += (
-            predicted - true_value
-        ) ** 2  # Juste des réels donc pas de norme right?
-    return total / (2 * len(predicted_label))
-
-
-def get_score(prediction_labels, true_lables):
+def get_score(prediction_labels: NDArray[np.float_], true_lables: NDArray[np.float_]):
     score = 0
     for pred, true_value in zip(prediction_labels, true_lables):
         if pred == true_value:
             score += 1
     score /= len(prediction_labels)
     return score
+
+
+def get_accuracies(
+    predicted_labels: NDArray[np.float_], expirement_labels: NDArray[np.float_]
+) -> Tuple[int, int, int, int]:
+    true_positive = 0
+    false_positive = 0
+    true_negative = 0
+    false_negative = 0
+
+    for pred, true_value in zip(predicted_labels, expirement_labels):
+        if pred == 0:
+            if true_value == 0:
+                true_negative += 1
+            else:
+                false_negative += 1
+        else:
+            if true_value == 1:
+                true_positive += 1
+            else:
+                false_positive += 1
+    return true_positive, false_positive, true_negative, false_negative
