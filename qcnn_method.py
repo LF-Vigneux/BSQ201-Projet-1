@@ -2,7 +2,8 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple
 import pennylane as qml
-from utils import get_qnode_instance, mean_square_error, get_score
+from utils import get_qnode_instance, get_score
+from error_functions import mean_square_error
 
 
 class QCNN_Solver:

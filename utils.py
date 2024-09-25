@@ -83,3 +83,23 @@ def get_accuracies(
             else:
                 false_positive += 1
     return true_positive, false_positive, true_negative, false_negative
+
+
+def get_good_distribution_of_labels(
+    feature_vectors: NDArray[np.float_], labels: NDArray[np.float_], number_per_label
+) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
+    label_zero_indixes = np.where(labels == 0)[
+        0
+    ]  # 4 premières lignes chat m'a aidé? ok?
+    label_one_indixes = np.where(labels == 1)[0]
+
+    selected_label_zero = np.random.choice(
+        label_zero_indixes, number_per_label, replace=False
+    )
+    selected_label_one = np.random.choice(
+        label_one_indixes, number_per_label, replace=False
+    )
+    indexes_list = np.append(selected_label_zero, selected_label_one)
+    np.random.shuffle(indexes_list)
+
+    return (feature_vectors[indexes_list, :], labels[indexes_list])
