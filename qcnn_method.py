@@ -61,7 +61,7 @@ class QCNN_Solver:
         return qml.probs(wires=0)
 
     def classification_function(probs_array: NDArray[np.float_]):
-        if probs_array[0] < 0.75:
+        if probs_array[0] < 0.467:
             return 1
         return 0
 

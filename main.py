@@ -74,7 +74,12 @@ def main(
 
     # The minimiser needs to have only the cost function and params as parameters
     def minimisation(cost_function, params):
-        return minimize(cost_function, params, method="COBYLA")
+        return minimize(
+            cost_function,
+            params,
+            method="COBYLA",
+            options={"tol": 1e-08},
+        )
 
     score, predictions = vqc.run(
         feature_vectors, labels, minimisation, training_ratio=training_ratio
@@ -92,7 +97,7 @@ def main(
 
     def convolution_circuit(num_qubits, params):
         test = qml.RandomLayers([params], range(num_qubits), 0.8)
-        return test.num_params
+        return len(params)
 
     qcnn = QCNN_Solver(
         quantum_embeddings.iqp_embedding, convolution_circuit, num_qubits
@@ -101,7 +106,10 @@ def main(
     # The minimiser needs to have only the cost function and params as parameters
     def minimisation(cost_function, params):
         return minimize(
-            cost_function, params, method="COBYLA", options={"maxiter": batches}
+            cost_function,
+            params,
+            method="COBYLA",
+            options={"maxiter": batches, "tol": 1e-08},
         )  # Jsp si maxiter va vraiment limiter le nombre d'évaluations de la fonction de coût, sinon utiliser un gradient descent plus facile
 
     score, predictions = qcnn.run(
