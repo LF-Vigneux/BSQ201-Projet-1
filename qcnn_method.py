@@ -19,9 +19,18 @@ class QCNN_Solver:
         self.circuit_to_optimize = get_qnode_instance(
             self.generate_qcnn_circuit, self.num_qubits
         )
-        self.params = np.zeros(
-            self.num_params_utilized
-        )  # Marche pour le moment où pas de param de pool
+        self.num_qubits
+
+        # get number of parameters
+        self.num_params = 0
+        test_qubits = self.num_qubits
+        while test_qubits > 1:
+            self.num_params += 2 * test_qubits
+            test_qubits = int(np.ceil(test_qubits / 2))
+
+        self.params = np.zeros(self.num_params)
+
+        # Marche pour le moment où pas de param de pool
 
     # General pooling function that works for even or odd number of bits, always filling with last qubit conneted with the first on the Cnot
     # If odd number of qubits, median qubit-> no operation
@@ -34,12 +43,15 @@ class QCNN_Solver:
     def generate_qcnn_circuit(
         self, feature_vector: NDArray[np.float_], params: NDArray[np.float_]
     ):
-        self.num_params_utilized = 0  # petit test inutile
+        num_params_utilized = 0
         num_qubits_utilized = self.num_qubits
         self.embedding(feature_vector)
         while True:
-            self.num_params_utilized += self.convolution_circuit(
-                params[self.num_params_utilized :]
+            num_params_utilized += self.convolution_circuit(
+                num_qubits_utilized,
+                params[
+                    num_params_utilized : num_params_utilized + 2 * num_qubits_utilized
+                ],
             )  # Comment savoir le nombre de paramètres, approche, donne tout et retourne le nombre d'utilisé...
             # qml.Barrier(only_visual=True)   #Pour des tests
             num_qubits_utilized = self.pool(num_qubits_utilized)
@@ -49,7 +61,7 @@ class QCNN_Solver:
         return qml.probs(wires=0)
 
     def classification_function(probs_array: NDArray[np.float_]):
-        if probs_array[0] > 0.5:
+        if probs_array[0] < 0.75:
             return 1
         return 0
 
@@ -83,6 +95,7 @@ class QCNN_Solver:
         def cost_function(
             params,
         ):  # À voir si on la sort de la classe et juste la donner
+            nonlocal batch_number
             batched_training_vectors = training_vectors[
                 batch_number * batch_lenght : (batch_number + 1) * batch_lenght,
                 :,  # On les mets de la grandeur actuel, dernier pas nécessairement même taille

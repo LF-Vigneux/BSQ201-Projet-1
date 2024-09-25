@@ -1,4 +1,5 @@
 import numpy as np
+import pennylane as qml
 from numpy.typing import NDArray
 from kernel_method import Quantum_Kernel_Classification
 from vqc_method import VQC_Solver
@@ -21,6 +22,7 @@ def main(
 ):
     num_qubits = 8
     """KERNELS"""
+    print("Running QSVM")
 
     # To use the kernel_angle_embedding function correctly, you need to use a wrapper functions with the number of qubits and the rotation gate to use
     rotation = "Y"
@@ -57,14 +59,16 @@ def main(
     print("The score of the kernel: ", score)
     print("The predictions of the labels: ", predictions)
     print("The true value of the labels: ", labels[training_period:])
+    print()
 
     """""" """""" """""" """""" ""
+    print("Running VQC")
     """VQC"""
-    num_params_ansatz = "À remplir"
+    num_params = 12
     vqc = VQC_Solver(
-        quantum_embeddings.iqp_embedding,
-        quantum_ansatz.test,
-        num_params_ansatz,
+        quantum_embeddings.amplitude_embedding,
+        quantum_ansatz.ansatz_circuit,
+        num_params,
         num_qubits,
     )
 
@@ -79,14 +83,16 @@ def main(
     print("The score of the VQC: ", score)
     print("The predictions of the labels: ", predictions)
     print("The true value of the labels: ", labels[training_period:])
+    print()
 
     """""" """""" """""" """"""
     """QCNN"""
+    print("QCNN is running")
     batches = 10
 
-    def convolution_circuit():
-        # À définir
-        pass
+    def convolution_circuit(num_qubits, params):
+        test = qml.RandomLayers([params], range(num_qubits), 0.8)
+        return test.num_params
 
     qcnn = QCNN_Solver(
         quantum_embeddings.iqp_embedding, convolution_circuit, num_qubits
@@ -120,8 +126,6 @@ if __name__ == "__main__":
     feature_vectors, labels = get_good_distribution_of_labels(
         feature_vectors, labels, 50
     )
-    print(np.shape(feature_vectors))
-    print(np.shape(labels))
     # normalize feature vectors
     for i in range(np.shape(feature_vectors)[1]):
         feature_vectors[:, i] = feature_vectors[:, i] / np.linalg.norm(

@@ -31,7 +31,7 @@ class VQC_Solver:
         return qml.probs(wires=range(self.num_qubits))
 
     def classification_function(probs_array: NDArray[np.float_]):
-        if probs_array[0] > 0.5:
+        if probs_array[0] < 0.75:
             return 1
         return 0
 
