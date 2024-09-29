@@ -44,7 +44,7 @@ class VQC_Solver:
         Parameters:
         - self: The VQC_Solver object that will use this circuit.
         - feature_vector (NDArray[np.float_]): The feature vector to be encoded in the instance of the circuit.
-        - params (NDArray[np.float_]): The parameters to be assined to each parametrixed gates of the ansatz.
+        - params (NDArray[np.float_]): The parameters to be assined to each parametrized gates of the ansatz.
 
         Returns:
         List[float]: The probabilities associated with each basis state in the circuit. They will not be directly accessible
@@ -78,7 +78,7 @@ class VQC_Solver:
         classification_function: callable = classification_function,
         error_function: callable = mean_square_error,
         training_ratio: float = 0.8,
-    ) -> Tuple[int, NDArray[np.float_]]:
+    ) -> Tuple[int, NDArray[np.int_]]:
         """
         Method to run the variationnal quatum classifier algorithm. By using a training dataset, for a set of training vectors,
         it will predict their associated labels.
@@ -89,7 +89,7 @@ class VQC_Solver:
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
                                         to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
-                                         the cost function to optimize and the parameter array to be used.
+                                         the cost function to optimize and the parameter array to be used. The optimization result must have a "x" attibute that gives the optimized parameter vector.
         - classification_function (callable = classification_function): The function that can, with a given list of probabilities of different states, determine if the
                                                                         the feature vector in input is of label 0 or 1. The base one uses the probability of tha all 0 state for a 0,37 threshold
                                                                         to give a label (A probability lower than that threshold gives a label of one).
@@ -98,8 +98,8 @@ class VQC_Solver:
         - training_ratio (float = 0.8): The ratio between the number of feature vectors used for training on the total number of feature vectors.
 
         Returns:
-        Tuple[int, NDArray[np.float_]]:  - The number of correctly predicted labels
-                                         - The prediction labels of the testing feature vectors.
+        Tuple[int, NDArray[np.int_]]:  - The number of correctly predicted labels
+                                       - The prediction labels of the testing feature vectors.
         """
         training_period = int(training_ratio * len(labels))
 

@@ -30,7 +30,7 @@ class Quantum_Kernel_Classification:
         labels: NDArray[np.float_],
         training_ratio: float = 0.8,
         svm=SVC,
-    ) -> Tuple[int, NDArray[np.float_]]:
+    ) -> Tuple[int, NDArray[np.int_]]:
         """
         Method to run the quantum kernel calssifier algorithm. By using a training dataset, for a set of training vectors,
         it will predict their associated labels.
@@ -44,7 +44,7 @@ class Quantum_Kernel_Classification:
         - svm=SVC: The support vector machine that the classifier will use.
 
         Returns:
-        Tuple[int, NDArray[np.float_]]:  - The number of correctly predicted labels
+        Tuple[int, NDArray[np.int_]]:  - The number of correctly predicted labels
                                          - The prediction labels of the testing feature vectors.
         """
 
