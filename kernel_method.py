@@ -13,7 +13,7 @@ class Quantum_Kernel_Classification:
 
         Parameters:
         - embedding_circuit (callable): The python function describing the embedding circuit of the data.
-        - (num_qubits: int): The number of qubits of the embedding circuit
+        - num_qubits (int): The number of qubits of the embedding circuit
 
         Returns:
         None
@@ -75,7 +75,7 @@ class Quantum_Kernel_Classification:
         Parameters:
         - self: The Quantum_Kernel_Classification object that will use this circuit.
         - a (NDArray[np.float_]): The first vector to be passed to the circuit.
-        - a (NDArray[np.float_]): The second vector to be passed to the circuit.
+        - b (NDArray[np.float_]): The second vector to be passed to the circuit.
 
         Returns:
         List[float]: The probabilities associated with each basis state in the circuit. They will not be directly accessible
