@@ -137,10 +137,7 @@ class QCNN_Solver:
         optimizer_function: callable,
         classification_function: callable = classification_function,
         error_function: callable = mean_square_error,
-        batched_data: Tuple[bool, int] = (  # Faire le cas pas batched
-            True,
-            10,
-        ),  # If to batch the data and if yes, how many batched data used
+        num_batches: int = 10,
         training_ratio: float = 0.8,
     ):
         training_period = int(training_ratio * len(labels))
@@ -152,7 +149,7 @@ class QCNN_Solver:
 
         predictions = np.empty_like(testing_labels)
 
-        batch_lenght = int(len(training_labels) / batched_data[1])
+        batch_lenght = int(len(training_labels) / num_batches)
 
         # Optimising the weights of the interactions
         batch_number = 0

@@ -105,7 +105,7 @@ def main(
             method="COBYLA",
             options={
                 # "maxiter": batches,     #À enlever si on veut batch
-                "tol": 1e-08,
+                "maxiter": 30,
             },
         )  # Jsp si maxiter va vraiment limiter le nombre d'évaluations de la fonction de coût, sinon utiliser un gradient descent plus facile
 
@@ -113,7 +113,7 @@ def main(
         feature_vectors,
         labels,
         minimisation,
-        batched_data=(True, batches),
+        # batched_data=batches,
         training_ratio=training_ratio,
     )
 
