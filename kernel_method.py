@@ -3,7 +3,7 @@ import pennylane as qml
 from sklearn.svm import SVC
 from numpy.typing import NDArray
 from typing import Tuple, List
-from utils import get_qnode_instance
+from utils.utils import get_qnode_instance
 
 
 class Quantum_Kernel_Classification:

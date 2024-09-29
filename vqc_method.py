@@ -2,8 +2,8 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple, List
 import pennylane as qml
-from utils import get_qnode_instance, get_score
-from error_functions import mean_square_error
+from utils.utils import get_qnode_instance, get_score
+from utils.error_functions import mean_square_error
 
 
 class VQC_Solver:

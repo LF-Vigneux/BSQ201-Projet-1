@@ -4,9 +4,9 @@ from numpy.typing import NDArray
 from kernel_method import Quantum_Kernel_Classification
 from vqc_method import VQC_Solver
 from qcnn_method import QCNN_Solver
-import quantum_embeddings
-import quantum_ansatz
-from utils import get_feature_vectors_and_labels, get_good_distribution_of_labels
+import utils.quantum_embeddings
+import utils.quantum_ansatz
+from utils.utils import get_feature_vectors_and_labels, get_good_distribution_of_labels
 from pennylane.templates import RandomLayers  # QCNN
 
 # Package à télécharger... Tout les optimiseurs sans gradients de Powell
@@ -28,7 +28,7 @@ def main(
     rotation = "Y"
 
     def angle_embedding(a):
-        return quantum_embeddings.angle_embedding(
+        return utils.quantum_embeddings.angle_embedding(
             a, num_qubits=num_qubits, rotation=rotation
         )
 
@@ -47,7 +47,7 @@ def main(
     # )
 
     kernel_qml = Quantum_Kernel_Classification(
-        quantum_embeddings.amplitude_embedding, num_qubits
+        utils.quantum_embeddings.amplitude_embedding, num_qubits
     )
 
     score, predictions = kernel_qml.run(
@@ -66,8 +66,8 @@ def main(
     """VQC"""
     num_params = 12
     vqc = VQC_Solver(
-        quantum_embeddings.amplitude_embedding,
-        quantum_ansatz.ansatz_circuit,
+        utils.quantum_embeddings.amplitude_embedding,
+        utils.quantum_ansatz.ansatz_circuit,
         num_params,
         num_qubits,
     )
@@ -95,7 +95,7 @@ def main(
     print("QCNN is running")
     batches = 15
 
-    qcnn = QCNN_Solver(quantum_embeddings.iqp_embedding, num_qubits)
+    qcnn = QCNN_Solver(utils.quantum_embeddings.iqp_embedding, num_qubits)
 
     # The minimiser needs to have only the cost function and params as parameters
     def minimisation(cost_function, params):
