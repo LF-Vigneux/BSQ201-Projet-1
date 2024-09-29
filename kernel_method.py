@@ -32,7 +32,7 @@ class Quantum_Kernel_Classification:
         svm=SVC,
     ) -> Tuple[int, NDArray[np.float_]]:
         """
-        Method to run the quantum kernel calssifier algorithm. By using a training dataset, for  a set of training vectors,
+        Method to run the quantum kernel calssifier algorithm. By using a training dataset, for a set of training vectors,
         it will predict their associated labels.
 
         Parameters:

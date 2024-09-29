@@ -79,6 +79,28 @@ class VQC_Solver:
         error_function: callable = mean_square_error,
         training_ratio: float = 0.8,
     ) -> Tuple[int, NDArray[np.float_]]:
+        """
+        Method to run the variationnal quatum classifier algorithm. By using a training dataset, for a set of training vectors,
+        it will predict their associated labels.
+
+        Parameters:
+        - self: The VQC_Solver object to call the method on.
+        - feature_vectors (NDArray[np.float_]): The feature vectors to train the classifier and the one to guess its labels at the end of them.
+        - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
+                                        to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
+        - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
+                                         the cost function to optimize and the parameter array to be used.
+        - classification_function (callable = classification_function): The function that can, with a given list of probabilities of different states, determine if the
+                                                                        the feature vector in input is of label 0 or 1. The base one uses the probability of tha all 0 state for a 0,37 threshold
+                                                                        to give a label (A probability lower than that threshold gives a label of one).
+        - error_function (callable = mean_square_error): The function that takes for input the laebls given by the classifier and their real value and gives a numeric value of exactness. This function is then optimized.
+                                                         The optimizer will tweek the parameters to minimize the result of that function.
+        - training_ratio (float = 0.8): The ratio between the number of feature vectors used for training on the total number of feature vectors.
+
+        Returns:
+        Tuple[int, NDArray[np.float_]]:  - The number of correctly predicted labels
+                                         - The prediction labels of the testing feature vectors.
+        """
         training_period = int(training_ratio * len(labels))
 
         training_vectors = feature_vectors[:training_period, :]
