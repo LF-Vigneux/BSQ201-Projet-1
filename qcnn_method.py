@@ -2,8 +2,8 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple, List
 import pennylane as qml
-from utils import get_qnode_instance, get_score
-from error_functions import mean_square_error
+from utils.utils import get_qnode_instance, get_score
+from utils.error_functions import mean_square_error
 
 
 class QCNN_Solver:
@@ -38,6 +38,7 @@ class QCNN_Solver:
         self.num_params = self.num_params - 2
         self.params = np.zeros(self.num_params)
 
+    @staticmethod
     def pool(old_size: int) -> int:
         """
         Function that creates the pooling circuit of the QCNN. It reduces the number of qubits to the
@@ -54,6 +55,7 @@ class QCNN_Solver:
             qml.CNOT(wires=(i, old_size - i - 1))
         return new_size
 
+    @staticmethod
     def convolution(num_qubits: int, params: NDArray[np.float_]) -> int:
         """
          Function that creates the convolution circuit of the QCNN as described in Slabbert's paper. It
@@ -112,14 +114,9 @@ class QCNN_Solver:
         self.embedding(feature_vector)
         while True:
             num_params_utilized += self.convolution(
-                num_qubits_utilized,
-                params[
-                    num_params_utilized:
-                ],  # On fait juste enlever ceux utilisés à date
+                num_qubits_utilized, params[num_params_utilized:]
             )
-            # qml.Barrier(only_visual=True)   #Pour des tests
             num_qubits_utilized = self.pool(num_qubits_utilized)
-            # qml.Barrier(only_visual=True)   #Pour des tests
             if num_qubits_utilized == 1:
                 break
         return qml.probs(wires=0)
