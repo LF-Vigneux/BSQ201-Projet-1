@@ -156,3 +156,22 @@ def get_good_distribution_of_labels(
     np.random.shuffle(indexes_list)
 
     return (feature_vectors[indexes_list, :], labels[indexes_list])
+
+
+def normalize_feature_vectors(
+    feature_vectors: NDArray[np.float_],
+) -> NDArray[np.float_]:
+    """
+    Normalizes the feature vector so that each feature as a minimum value of -1 and maximum value of 1
+
+    Parameters:
+    - feature_vectors (NDArray[np.float_]): The feature vectors of the dataset that need to be normalized.
+    Returns:
+    NDArray[np.float_]:  The normalized feature vectors
+    """
+    normalized_feature_vectors = np.empty_like(feature_vectors)
+    for i in range(np.shape(feature_vectors)[1]):
+        normalized_feature_vectors[:, i] = feature_vectors[:, i] / np.linalg.norm(
+            feature_vectors[:, i]
+        )
+    return normalized_feature_vectors

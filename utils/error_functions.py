@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.typing import NDArray
-from utils import get_accuracies
+from utils.utils import get_accuracies
 from statistics import stdev
 
 

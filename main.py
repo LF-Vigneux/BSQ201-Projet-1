@@ -6,7 +6,11 @@ from vqc_method import VQC_Solver
 from qcnn_method import QCNN_Solver
 import utils.quantum_embeddings
 import utils.quantum_ansatz
-from utils.utils import get_feature_vectors_and_labels, get_good_distribution_of_labels
+from utils.utils import (
+    get_feature_vectors_and_labels,
+    get_good_distribution_of_labels,
+    normalize_feature_vectors,
+)
 from pennylane.templates import RandomLayers  # QCNN
 
 # Package à télécharger... Tout les optimiseurs sans gradients de Powell
@@ -132,10 +136,6 @@ if __name__ == "__main__":
         feature_vectors, labels, 50
     )
     # normalize feature vectors
-    for i in range(np.shape(feature_vectors)[1]):
-        feature_vectors[:, i] = feature_vectors[:, i] / np.linalg.norm(
-            feature_vectors[:, i]
-        )
-
+    feature_vectors = normalize_feature_vectors(feature_vectors)
     training_ratio = 0.8
     main(feature_vectors, labels, training_ratio)
