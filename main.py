@@ -4,6 +4,7 @@ from numpy.typing import NDArray
 from kernel_method import Quantum_Kernel_Classification
 from vqc_method import VQC_Solver
 from qcnn_method import QCNN_Solver
+from cnn_method import train_and_evaluate
 import utils.quantum_embeddings
 import utils.quantum_ansatz
 from utils.utils import (
@@ -24,6 +25,12 @@ from scipy.optimize import minimize, OptimizeResult, Bounds
 def main(
     feature_vectors: NDArray[np.float_], labels: NDArray[np.int_], training_ratio: int
 ):
+    """CNN"""
+    print("Running CNN")
+
+    print(f"The accuracy score: {train_and_evaluate(feature_vectors, labels):.4f}")
+    print()
+
     num_qubits = 8
     """KERNELS"""
     print("Running QSVM")
@@ -132,10 +139,10 @@ if __name__ == "__main__":
     )
 
     # Réduire dataset, trop gros:
-    feature_vectors, labels = get_good_distribution_of_labels(
-        feature_vectors, labels, 50
-    )
+    # feature_vectors, labels = get_good_distribution_of_labels(
+    #    feature_vectors, labels, 50
+    # )
     # normalize feature vectors
-    feature_vectors = normalize_feature_vectors(feature_vectors)
+    # feature_vectors = normalize_feature_vectors(feature_vectors)
     training_ratio = 0.8
     main(feature_vectors, labels, training_ratio)
