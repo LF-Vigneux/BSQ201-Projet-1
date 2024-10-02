@@ -77,22 +77,14 @@ class QCNN_Solver:
             return 2
         else:
             qubit_to_target = max(num_qubits - 3, 1)
-            num_param_per_qubit = np.ones(num_qubits)
-            for j in range(num_qubits):
-                qml.RY(params[j], j)
-            i_param = num_qubits
+            i_param = 0
             for i in range(num_qubits):
-                target_qubit = (i + qubit_to_target) % num_qubits
+                target_qubit = (i + qubit_to_target) % (num_qubits)
+                qml.RY(params[i_param], i)
+                qml.RY(params[i_param + 1], target_qubit)
                 qml.CNOT((i, target_qubit))
-                if num_param_per_qubit[i] == 1:
-                    qml.RY(params[i_param], i)
-                    i_param += 1
-                    num_param_per_qubit[i] = 2
-                if num_param_per_qubit[target_qubit] == 1:
-                    qml.RY(params[i_param], target_qubit)
-                    i_param += 1
-                    num_param_per_qubit[target_qubit] = 2
-        return 2 * num_qubits
+                i_param += 2
+        return i_param
 
     def generate_qcnn_circuit(
         self, feature_vector: NDArray[np.float_], params: NDArray[np.float_]
@@ -133,7 +125,7 @@ class QCNN_Solver:
         Returns:
         int: The label associated with the feature vector ran in the VQC circuit. Will be 0 or 1.
         """
-        if probs_array[0] < 0.5:
+        if probs_array[0] < 0.2:
             return 1
         return 0
 
@@ -187,7 +179,7 @@ class QCNN_Solver:
                 resulting_labels[i] = classification_function(probs)
             return error_function(resulting_labels, training_labels)
 
-        self.params = optimizer_function(cost_function, self.params).x
+        self.params = optimizer_function(cost_function, self.params)
 
         # Getting the predictions
         for i, testing_vector in enumerate(testing_vectors):
@@ -218,8 +210,7 @@ class QCNN_Solver:
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
                                         to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
-                                         the cost function to optimize and the parameter array to be used.The optimization result must have a "x" attibute that gives the optimized parameter vector.
-                                         It must also have exactly num_batches iterations.
+                                         the cost function to optimize and the parameter array to be used. The function must return the optimized parameters.
         - classification_function (callable = classification_function): The function that can, with a given list of probabilities of different states, determine if the
                                                                         the feature vector in input is of label 0 or 1. The base one uses the probability of tha all 0 state for a 0,5 threshold
                                                                         to give a label (A probability lower than that threshold gives a label of one).
@@ -267,7 +258,7 @@ class QCNN_Solver:
             batch_number = batch_number + 1
             return error_function(resulting_labels, training_labels)
 
-        self.params = optimizer_function(cost_function, self.params).x
+        self.params = optimizer_function(cost_function, self.params)
 
         # Getting the predictions
         for i, testing_vector in enumerate(testing_vectors):

@@ -83,7 +83,7 @@ def main(
             params,
             method="COBYLA",
             options={"tol": 1e-08},
-        )
+        ).x
 
     score, predictions = vqc.run(
         feature_vectors, labels, minimisation, training_ratio=training_ratio
@@ -111,7 +111,7 @@ def main(
                 # "maxiter": batches,     #À enlever si on veut batch
                 "maxiter": 30,
             },
-        )  # Jsp si maxiter va vraiment limiter le nombre d'évaluations de la fonction de coût, sinon utiliser un gradient descent plus facile
+        ).x  # Jsp si maxiter va vraiment limiter le nombre d'évaluations de la fonction de coût, sinon utiliser un gradient descent plus facile
 
     score, predictions = qcnn.run(
         feature_vectors,

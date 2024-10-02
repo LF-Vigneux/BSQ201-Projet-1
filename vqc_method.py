@@ -89,7 +89,7 @@ class VQC_Solver:
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
                                         to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
-                                         the cost function to optimize and the parameter array to be used. The optimization result must have a "x" attibute that gives the optimized parameter vector.
+                                         the cost function to optimize and the parameter array to be used. The function must return the optimized parameters.
         - classification_function (callable = classification_function): The function that can, with a given list of probabilities of different states, determine if the
                                                                         the feature vector in input is of label 0 or 1. The base one uses the probability of tha all 0 state for a 0,37 threshold
                                                                         to give a label (A probability lower than that threshold gives a label of one).
@@ -120,7 +120,7 @@ class VQC_Solver:
                 resulting_labels[i] = classification_function(probs)
             return error_function(resulting_labels, training_labels)
 
-        self.params = optimizer_function(cost_function, self.params).x
+        self.params = optimizer_function(cost_function, self.params)
 
         # Getting the predictions
         for i, testing_vector in enumerate(testing_vectors):
