@@ -172,7 +172,6 @@ class QCNN_Solver:
         def cost_function(
             params,
         ):
-
             resulting_labels = np.empty_like(training_labels)
             for i, training_vector in enumerate(training_vectors):
                 probs = self.circuit_to_optimize(training_vector, params)
