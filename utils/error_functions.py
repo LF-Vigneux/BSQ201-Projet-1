@@ -41,6 +41,11 @@ def accuracy(
     true_positive, false_positive, true_negative, false_negative = get_accuracies(
         predicted_labels, expirement_labels
     )
+
+    print(
+        (true_positive + true_negative)
+        / (true_positive + false_positive + true_negative + false_negative)
+    )
     return (true_positive + true_negative) / (
         true_positive + false_positive + true_negative + false_negative
     )

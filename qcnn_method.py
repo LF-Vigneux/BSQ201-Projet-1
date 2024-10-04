@@ -36,7 +36,7 @@ class QCNN_Solver:
             self.num_params += 2 * test_qubits
             test_qubits = int(np.ceil(test_qubits / 2))
         self.num_params = self.num_params - 2
-        self.params = np.zeros(self.num_params)
+        self.params = 0.5 * np.random.randn(self.num_params)
 
     @staticmethod
     def pool(old_size: int) -> int:
