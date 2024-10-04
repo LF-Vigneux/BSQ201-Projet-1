@@ -125,7 +125,7 @@ class QCNN_Solver:
         Returns:
         int: The label associated with the feature vector ran in the VQC circuit. Will be 0 or 1.
         """
-        if probs_array[0] < 0.2:
+        if probs_array[0] < 0.1:
             return 1
         return 0
 
@@ -169,8 +169,9 @@ class QCNN_Solver:
 
         predictions = np.empty_like(testing_labels)
 
+        # optimizing the ansatz
         def cost_function(
-            params,
+            params: NDArray[np.float_],
         ):
             resulting_labels = np.empty_like(training_labels)
             for i, training_vector in enumerate(training_vectors):
