@@ -1,4 +1,4 @@
-import numpy as np
+from pennylane import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple, List
 import pennylane as qml
@@ -35,8 +35,8 @@ class QCNN_Solver:
         while test_qubits > 1:
             self.num_params += 2 * test_qubits
             test_qubits = int(np.ceil(test_qubits / 2))
-        self.num_params = self.num_params - 2
-        self.params = 0.5 * np.random.randn(self.num_params)
+        self.num_params -= 2
+        self.params = 0.5 * np.random.randn(self.num_params, requires_grad=True)
 
     @staticmethod
     def pool(old_size: int) -> int:
@@ -72,7 +72,7 @@ class QCNN_Solver:
         """
         if num_qubits == 2:
             qml.RY(params[0], 0)
-            qml.RY(params[0], 1)
+            qml.RY(params[1], 1)
             qml.CNOT((0, 1))
             return 2
         else:
@@ -125,7 +125,8 @@ class QCNN_Solver:
         Returns:
         int: The label associated with the feature vector ran in the VQC circuit. Will be 0 or 1.
         """
-        if probs_array[0] < 0.1:
+
+        if probs_array._value[0] < 0.5:
             return 1
         return 0
 
@@ -177,6 +178,7 @@ class QCNN_Solver:
             for i, training_vector in enumerate(training_vectors):
                 probs = self.circuit_to_optimize(training_vector, params)
                 resulting_labels[i] = classification_function(probs)
+            print(error_function(resulting_labels, training_labels))
             return error_function(resulting_labels, training_labels)
 
         self.params = optimizer_function(cost_function, self.params)

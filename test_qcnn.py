@@ -1,4 +1,4 @@
-import numpy as np
+from pennylane import numpy as np
 from utils.utils import (
     get_feature_vectors_and_labels,
     get_good_distribution_of_labels,
@@ -37,8 +37,8 @@ from pennylane.optimize import (
 )
 
 training_ratio = 0.8
-"""
 
+"""
 def minimisation(cost_function, params):
     result = minimize(
         cost_function,
@@ -50,18 +50,15 @@ def minimisation(cost_function, params):
         },
     )
     return result.x
-
-
 """
 
 
-def minimisation(cost_function, params):
-    result = GradientDescentOptimizer(stepsize=100)
-    new_params = params
-    for _ in range(100):
+def minimisation(cost_function, original_params):
+    result = NesterovMomentumOptimizer(stepsize=0.01)
+    new_params = original_params
+    for i in range(100):
         new_params, fct = result.step_and_cost(cost_function, new_params)
-        print(new_params)
-        print(fct)
+        print("itération ", i, " terminée. Coût: ", fct)
     return new_params
 
 
@@ -83,7 +80,7 @@ score, predictions = qcnn.run(
     feature_vectors,
     labels,
     minimisation,
-    error_function=new_cost,
+    error_function=mean_square_error,
     training_ratio=training_ratio,
 )
 
