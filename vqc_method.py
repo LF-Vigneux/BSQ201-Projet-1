@@ -1,4 +1,4 @@
-import numpy as np
+from pennylane import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple, List
 import pennylane as qml
@@ -54,28 +54,11 @@ class VQC_Solver:
         self.ansatz(params)
         return qml.probs(wires=range(self.num_qubits))
 
-    def classification_function(probs_array: NDArray[np.float_]) -> int:
-        """
-        Method that determines, with the probability of measuring the complete 0th state,
-        if the tested feature vector must be associated with the label 0 or 1.
-
-
-        Parameters:
-        - probs_array (NDArray[np.float_]): The probability array given by runing the pennylane qnode associated with the VQC circuit.
-
-        Returns:
-        int: The label associated with the feature vector ran in the VQC circuit. Will be 0 or 1.
-        """
-        if probs_array[0] < 0.37:
-            return 1
-        return 0
-
     def run(
         self,
         feature_vectors: NDArray[np.float_],
         labels: NDArray[np.float_],
         optimizer_function: callable,
-        classification_function: callable = classification_function,
         error_function: callable = mean_square_error,
         training_ratio: float = 0.8,
     ) -> Tuple[int, NDArray[np.int_]]:
@@ -88,13 +71,12 @@ class VQC_Solver:
         - feature_vectors (NDArray[np.float_]): The feature vectors to train the classifier and the one to guess its labels at the end of them.
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
                                         to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
+                                        The value of each label must be -1 or 1.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
                                          the cost function to optimize and the parameter array to be used. The function must return the optimized parameters.
-        - classification_function (callable = classification_function): The function that can, with a given list of probabilities of different states, determine if the
-                                                                        the feature vector in input is of label 0 or 1. The base one uses the probability of tha all 0 state for a 0,37 threshold
-                                                                        to give a label (A probability lower than that threshold gives a label of one).
         - error_function (callable = mean_square_error): The function that takes for input the laebls given by the classifier and their real value and gives a numeric value of exactness. This function is then optimized.
-                                                         The optimizer will tweek the parameters to minimize the result of that function.
+                                                         The optimizer will tweek the parameters to minimize the result of that function. The function must use directly the expectation values in the calculation. In
+                                                         other words, it can not transform the prediction data to calculate the cost.
         - training_ratio (float = 0.8): The ratio between the number of feature vectors used for training on the total number of feature vectors.
 
         Returns:
@@ -114,17 +96,17 @@ class VQC_Solver:
         def cost_function(
             params: NDArray[np.float_],
         ):
-            resulting_labels = np.empty_like(training_labels)
-            for i, training_vector in enumerate(training_vectors):
-                probs = self.circuit_to_optimize(training_vector, params)
-                resulting_labels[i] = classification_function(probs)
+            resulting_labels = [
+                self.circuit_to_optimize(training_vector, params)
+                for training_vector in training_vectors
+            ]
             return error_function(resulting_labels, training_labels)
 
         self.params = optimizer_function(cost_function, self.params)
 
         # Getting the predictions
         for i, testing_vector in enumerate(testing_vectors):
-            predictions[i] = classification_function(
+            predictions[i] = np.sign(
                 self.circuit_to_optimize(testing_vector, self.params)
             )
 

@@ -14,6 +14,7 @@ feature_vectors, labels = get_feature_vectors_and_labels(
 feature_vectors, labels = get_good_distribution_of_labels(feature_vectors, labels, 50)
 # Normalize the feature vectors
 feature_vectors = normalize_feature_vectors(feature_vectors)
+labels = (2 * labels) - 1
 
 
 from qcnn_method import QCNN_Solver
@@ -26,7 +27,7 @@ def angle(feature_vectors):
     return utils.quantum_embeddings.angle_embedding(feature_vectors, 8, rotation="Y")
 
 
-qcnn = QCNN_Solver(utils.quantum_embeddings.iqp_embedding, num_qubits)
+qcnn = QCNN_Solver(angle, num_qubits)
 
 from scipy.optimize import minimize
 from utils.error_functions import mean_square_error
@@ -50,13 +51,15 @@ def minimisation(cost_function, params):
         },
     )
     return result.x
+
+
 """
 
 
 def minimisation(cost_function, original_params):
-    result = NesterovMomentumOptimizer(stepsize=0.01)
+    result = NesterovMomentumOptimizer(stepsize=0.1)
     new_params = original_params
-    for i in range(100):
+    for i in range(50):
         new_params, fct = result.step_and_cost(cost_function, new_params)
         print("itération ", i, " terminée. Coût: ", fct)
     return new_params

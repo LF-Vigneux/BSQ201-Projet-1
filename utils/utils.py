@@ -110,8 +110,8 @@ def get_accuracies(
     false_negative = 0
 
     for pred, true_value in zip(predicted_labels, expirement_labels):
-        if pred == 0:
-            if true_value == 0:
+        if pred == -1:
+            if true_value == -1:
                 true_negative += 1
             else:
                 false_negative += 1
@@ -129,7 +129,7 @@ def get_good_distribution_of_labels(
     number_per_label: int,
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
-    Gets a distribution of the feature vector given with the same nomber as label "1" feature vector than "0".
+    Gets a distribution of the feature vector given with the same nomber as label "1" feature vector than "-1".
     The choice of the vectors are random. The final array is then shuffled so that the 0 and 1 are randomly placed.
 
     Parameters:
@@ -141,18 +141,16 @@ def get_good_distribution_of_labels(
     Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the balanced feature vectors
                                                     - The vector of the balenced set's labels
     """
-    label_zero_indixes = np.where(labels == 0)[
-        0
-    ]  # 4 premières lignes chat m'a aidé? ok?
-    label_one_indixes = np.where(labels == 1)[0]
+    label_negatives_indixes = np.where(labels == -1)[0]
+    label_positives_indixes = np.where(labels == 1)[0]
 
-    selected_label_zero = np.random.choice(
-        label_zero_indixes, number_per_label, replace=False
+    selected_label_negative = np.random.choice(
+        label_negatives_indixes, number_per_label, replace=False
     )
-    selected_label_one = np.random.choice(
-        label_one_indixes, number_per_label, replace=False
+    selected_label_positive = np.random.choice(
+        label_positives_indixes, number_per_label, replace=False
     )
-    indexes_list = np.append(selected_label_zero, selected_label_one)
+    indexes_list = np.append(selected_label_negative, selected_label_positive)
     np.random.shuffle(indexes_list)
 
     return (feature_vectors[indexes_list, :], labels[indexes_list])
