@@ -52,7 +52,10 @@ class VQC_Solver:
         """
         self.embedding(feature_vector)
         self.ansatz(params)
-        return qml.probs(wires=range(self.num_qubits))
+        z_pauli = qml.PauliZ(0)
+        for i in range(1, self.num_qubits):
+            z_pauli = z_pauli @ qml.PauliZ(i)
+        return qml.expval(z_pauli)
 
     def run(
         self,
