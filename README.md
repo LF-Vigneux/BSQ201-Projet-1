@@ -1,4 +1,4 @@
-# BSQ201-Projet-1
+Quantum_classifiers_BSQ_201
 
 Projet réalisé par Karlheinz Fedorlensky Forvil, Ugo Massé et Louis-Félix Vigneux
 
