@@ -1,7 +1,7 @@
 import pennylane as qml
 import numpy as np
 from numpy.typing import NDArray
-from utils import transform_vector_into_power_of_two_dim
+from .utils import transform_vector_into_power_of_two_dim
 
 
 def angle_embedding(a: NDArray[np.float_], num_qubits: int = None, rotation: str = "Y"):
