@@ -1,5 +1,5 @@
-import pennylane as qml
 import numpy as np
+import pandas as pd
 from utils.utils import (
     get_score,
     get_feature_vectors_and_labels,
@@ -102,7 +102,7 @@ def tester(
     return return_array
 
 
-num_tests = 10
+num_tests = 1
 test_return = np.empty((num_tests, 4))
 i = 0
 
@@ -216,7 +216,7 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_x,
-    8,
+    10,
     "QSVM",
 )
 print("iteration ", i + 1, "terminée")
@@ -227,7 +227,7 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_y,
-    8,
+    10,
     "QSVM",
 )
 print("iteration ", i + 1, "terminée")
@@ -238,7 +238,7 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_z,
-    8,
+    10,
     "QSVM",
 )
 print("iteration ", i + 1, "terminée")
@@ -256,4 +256,8 @@ print("iteration ", i + 1, "terminée")
 i += 1
 
 
-test_return.to_csv("run_results.csv", index=False)
+# Convert the array to a pandas DataFrame
+df = pd.DataFrame(test_return)
+
+# Save the DataFrame to a CSV file
+df.to_csv("run_results.csv", index=False)
