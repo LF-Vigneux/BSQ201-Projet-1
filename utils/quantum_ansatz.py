@@ -39,3 +39,22 @@ def ansatz_circuit(params: NDArray[np.float_]) -> int:
         qml.RZ(params[params_no], z)
         params_no += 1
     return params_no
+
+
+def ansatz_random_layer(
+    params: NDArray[np.float_], num_qubits: int = 3, num_params_per_qubits: int = 4
+) -> None:
+    """
+    Creates a random ansatz with the random layer of Pennylane.
+    Parameters:
+    - params (NDArray[np.float_]): The value of the parametrized gates of the ansatz.
+    - num_qubits (int = 3): The number of qubits of the ansatz.
+    - num_params_per_qubits (int = 4): The number of parametrized gates per qubit.
+
+    Returns:
+    None
+    """
+
+    params_reshaped = params.reshape(num_qubits, num_params_per_qubits)
+
+    qml.RandomLayers(weights=params_reshaped, wires=range(2), ratio_imprim=0.75)

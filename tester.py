@@ -42,8 +42,7 @@ def minimisation_cobyla(cost_function, params):
         params,
         method="COBYLA",
         options={
-            "maxiter": 70,
-            "disp": True,  # To reduce the time of optimization
+            "maxiter": 100,
         },
     )
     return result.x
@@ -102,13 +101,14 @@ def tester(
     return return_array
 
 
-num_tests = 10
+num_tests = 20
 test_return = np.empty((num_tests, 4))
 i = 0
 
 """
 Pulsars
 """
+
 
 num_qubits = 8
 
@@ -125,13 +125,17 @@ def angle_embedding_z(a):
     return angle_embedding(a, num_qubits=num_qubits, rotation="Z")
 
 
+"""
+COBYLA
+"""
 # Itération 1
 test_return[i, :] = tester(
     feature_vectors_pulsar,
     labels_pulsar,
     amplitude_embedding,
     3,
-    "QSVM",
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -142,7 +146,8 @@ test_return[i, :] = tester(
     labels_pulsar,
     angle_embedding_x,
     8,
-    "QSVM",
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -153,7 +158,8 @@ test_return[i, :] = tester(
     labels_pulsar,
     angle_embedding_y,
     8,
-    "QSVM",
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -164,7 +170,8 @@ test_return[i, :] = tester(
     labels_pulsar,
     angle_embedding_z,
     8,
-    "QSVM",
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -175,11 +182,74 @@ test_return[i, :] = tester(
     labels_pulsar,
     iqp_embedding,
     8,
-    "QSVM",
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
 
+"""
+Nesterov
+"""
+# Itération 1
+test_return[i, :] = tester(
+    feature_vectors_pulsar,
+    labels_pulsar,
+    amplitude_embedding,
+    3,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 2
+test_return[i, :] = tester(
+    feature_vectors_pulsar,
+    labels_pulsar,
+    angle_embedding_x,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 3
+test_return[i, :] = tester(
+    feature_vectors_pulsar,
+    labels_pulsar,
+    angle_embedding_y,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 4
+test_return[i, :] = tester(
+    feature_vectors_pulsar,
+    labels_pulsar,
+    angle_embedding_z,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 5
+test_return[i, :] = tester(
+    feature_vectors_pulsar,
+    labels_pulsar,
+    iqp_embedding,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
 
 """
 Telescope
@@ -200,13 +270,17 @@ def angle_embedding_z(a):
     return angle_embedding(a, num_qubits=num_qubits, rotation="Z")
 
 
+"""
+COBYLA
+"""
 # Itération 1
 test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     amplitude_embedding,
-    4,
-    "QSVM",
+    3,
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -216,8 +290,9 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_x,
-    10,
-    "QSVM",
+    8,
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -227,8 +302,9 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_y,
-    10,
-    "QSVM",
+    8,
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -238,8 +314,9 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     angle_embedding_z,
-    10,
-    "QSVM",
+    8,
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
@@ -249,8 +326,72 @@ test_return[i, :] = tester(
     feature_vectors_tele,
     labels_tele,
     iqp_embedding,
-    10,
-    "QSVM",
+    8,
+    "QCNN",
+    optimizer_function=minimisation_cobyla,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+"""
+Nesterov
+"""
+# Itération 1
+test_return[i, :] = tester(
+    feature_vectors_tele,
+    labels_tele,
+    amplitude_embedding,
+    3,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 2
+test_return[i, :] = tester(
+    feature_vectors_tele,
+    labels_tele,
+    angle_embedding_x,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 3
+test_return[i, :] = tester(
+    feature_vectors_tele,
+    labels_tele,
+    angle_embedding_y,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 4
+test_return[i, :] = tester(
+    feature_vectors_tele,
+    labels_tele,
+    angle_embedding_z,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
+)
+print("iteration ", i + 1, "terminée")
+i += 1
+
+# Itération 5
+test_return[i, :] = tester(
+    feature_vectors_tele,
+    labels_tele,
+    iqp_embedding,
+    8,
+    "QCNN",
+    optimizer_function=minimisation_nes,
 )
 print("iteration ", i + 1, "terminée")
 i += 1
