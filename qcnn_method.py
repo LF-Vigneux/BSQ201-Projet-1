@@ -16,7 +16,7 @@ class QCNN_Solver:
         Object that can run the quantum convolutionnal neural network classification algorithm.
 
         Parameters:
-        - embedding_circuit (callable): The python function describing the embedding circuit of the data.
+        - embedding_circuit (callable): The Python function describing the embedding circuit of the data.
         - num_qubits (int): The number of qubits of the embedding circuit and the ansatz.
 
         Returns:
@@ -29,7 +29,7 @@ class QCNN_Solver:
         )
         self.num_qubits
 
-        # get number of parameters
+        # get the number of parameters
         self.num_params = 0
         test_qubits = self.num_qubits
         while test_qubits > 1:
@@ -41,8 +41,7 @@ class QCNN_Solver:
     @staticmethod
     def pool(old_size: int) -> int:
         """
-        Function that creates the pooling circuit of the QCNN. It reduces the number of qubits to the
-        ceiling of the half of number of qubits in parameter.
+        Function that creates the pooling circuit of the QCNN. It reduces the number of qubits given to the function to its rounded-up half.
 
         Parameters:
         - old_size (int): The number of qubits currently active that need to be reduced by half.
@@ -61,11 +60,11 @@ class QCNN_Solver:
          Function that creates the convolution circuit of the QCNN as described in Slabbert's paper. It
          makes all of the qubits interact with each other with different weights of interaction. This function
          also works for a given amount of qubits. The interactions will go from the ith qubits to the
-        (max(num_qubits - 3, 1)+i)%num_qubit qubit.
+         (max(num_qubits - 3, 1)+i)%num_qubit qubit.
 
          Parameters:
          - num_qubits (int): The number of qubits currently active that need to interact together.
-         - parms (NDArray[np.float_]): The parameters that ar still mot used in the general circuit.
+         - params (NDArray[np.float_]): The parameters that are yet to be used in the general circuit.
 
          Returns:
          int: The number of parameters used in this instance of the convolution circuit.
@@ -95,7 +94,7 @@ class QCNN_Solver:
         Parameters:
         - self: The QCNN_Solver object that will use this circuit.
         - feature_vector (NDArray[np.float_]): The feature vector to be encoded in the instance of the circuit.
-        - params (NDArray[np.float_]): The parameters to be assined to each parametrized gates of the convolution circuits.
+        - params (NDArray[np.float_]): The parameters to be assigned to each parametrized gates of the convolution circuits.
 
         Returns:
         List[float]: The probabilities associated with each basis state in the circuit. They will not be directly accessible
@@ -127,14 +126,14 @@ class QCNN_Solver:
 
         Parameters:
         - self: The VQC_Solver object to call the method on.
-        - feature_vectors (NDArray[np.float_]): The feature vectors to train the classifier and the one to guess its labels at the end of them.
+        - feature_vectors (NDArray[np.float_]): The feature vectors to train the classifier. The prediction vectors are also in this array and they are after the training ones.
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
-                                        to determine the precision of the clasifier. The labels must be in the same order as their associated feature vector.
+                                        to optimize the circuit. The labels must be in the same order as their associated feature vector.
                                         The value of each label must be -1 or 1.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
-                                         the cost function to optimize and the parameter array to be used.The optimization result must have a "x" attibute that gives the optimized parameter vector.
-        - error_function (callable = mean_square_error): The function that takes for input the laebls given by the classifier and their real value and gives a numeric value of exactness. This function is then optimized.
-                                                         The optimizer will tweek the parameters to minimize the result of that function. The function must use directly the expectation values in the calculation. In
+                                         the cost function to optimize and the parameter array to be used. It returns the optimized parameters.
+        - error_function (callable = mean_square_error): The function that takes for input the labels given by the classifier and their real value and gives a numeric value of exactness. This function is then optimized.
+                                                         The optimizer will tweak the parameters to minimize the result of that function. The function must use directly the expectation values in the calculation. In
                                                          other words, it can not transform the prediction data to calculate the cost.
         - training_ratio (float = 0.8): The ratio between the number of feature vectors used for training on the total number of feature vectors.
 

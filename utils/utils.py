@@ -3,6 +3,7 @@ from pennylane import QNode
 import numpy as np
 from typing import Tuple
 from numpy.typing import NDArray
+import pandas as pd
 
 
 def get_feature_vectors_and_labels(
@@ -23,14 +24,16 @@ def get_feature_vectors_and_labels(
                                                     - The vector of the set's labels
     """
     if extension == "csv":
-        dataset = np.loadtxt(
-            path + dataset_name + "." + extension, delimiter=",", skiprows=rows_to_skip
-        )
+        dataset = pd.read_csv(path + dataset_name + "." + extension)
+        feature_vectors = dataset.iloc[:, :-1].to_numpy()
+        labels = dataset.iloc[:, -1].to_numpy()
     else:
         dataset = np.load(path + dataset_name + "." + extension, allow_pickle=True)
+        feature_vectors = dataset[rows_to_skip:, :-1]
+        labels = dataset[rows_to_skip:, -1]
 
     # Soft max mais les données entre 0 et pi
-    return dataset[:, :-1], dataset[:, -1]
+    return feature_vectors, labels
 
 
 def transform_vector_into_power_of_two_dim(
