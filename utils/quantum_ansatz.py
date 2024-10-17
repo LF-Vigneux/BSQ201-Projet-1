@@ -1,7 +1,16 @@
 import pennylane as qml
+import numpy as np
+from numpy.typing import NDArray
 
 
-def ansatz_circuit(params):
+def ansatz_circuit(params: NDArray[np.float_]) -> int:
+    """
+    8 qubit ansatz that works well with the HTRU_2 dataset. It is implemented with the Pennylane architecture.
+    Parameters:
+    - params (NDArray[np.float_]): The value of the parametrized gates of the ansatz.
+    Returns:
+    int: The number of parameters used in the ansatz.
+    """
 
     params_no = 0
     num_qubits = 3

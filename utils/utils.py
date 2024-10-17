@@ -10,18 +10,18 @@ def get_feature_vectors_and_labels(
     dataset_name: str, extension: str = "npy", path: str = "", rows_to_skip: int = 0
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
-    Reads the datasets from a file and divides the data into two matrices. The first one is the
-    feature vectors and the othe rone is the labels. The labels of the dataset to read must be
+    Reads the datasets from a csv or npy file and divides the data into two arrays. The first one is the
+    feature vectors, and the other one is the labels. The labels of the dataset to read must be
     in the last column.
 
     Parameters:
-    - dataset_name (str): The name of the datasdet file without the extension.
-    - extension (str="npy"): The extension of the file of the dataset
+    - dataset_name (str): The name of the dataset file without the extension.
+    - extension (str="npy"): The extension of the file of the dataset.
     - path (str=""): The relative path to the dataset file.
 
     Returns:
-    Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the feature vectors
-                                                    - The vector of the set's labels
+    Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the feature vectors.
+                                                    - The vector of the set's labels.
     """
     if extension == "csv":
         dataset = pd.read_csv(path + dataset_name + "." + extension)
@@ -32,7 +32,6 @@ def get_feature_vectors_and_labels(
         feature_vectors = dataset[rows_to_skip:, :-1]
         labels = dataset[rows_to_skip:, -1]
 
-    # Soft max mais les données entre 0 et pi
     return feature_vectors, labels
 
 
@@ -40,14 +39,14 @@ def transform_vector_into_power_of_two_dim(
     feature_vector: NDArray[np.float_],
 ) -> NDArray[np.float_]:
     """
-    Transform a feature vector into one with the same information but to the the superior ou equal power of two dim.
+    Transform a feature vector into one with the same information but to the superior or equal power of two dim.
     The remaining elements of the new array are filled with zeroes.
 
     Parameters:
     - feature_vector: NDArray[np.float_]: The feature vector to put into a power of two dimension vector.
 
     Returns:
-    NDArray[np.float_]: The new feature vector into a power of two array.
+    NDArray[np.float_]: The new feature vector into a power of two arrays.
     """
     if not np.log2(len(feature_vector)) % 1 == 0:
         power_of_two = int(np.ceil(np.log2(len(feature_vector))))
@@ -62,13 +61,13 @@ def get_qnode_instance(
     circuit_function: callable, num_qubits: int, device_name: str = "default.qubit"
 ) -> QNode:
     """
-    Transforms the a python function describing a pennylane circuit into a qnode with the specified device.
+    Transforms the Python function describing a Pennylane circuit into a qnode with the specified device.
     Parameters:
-    - circuit_function (callable): The python function descibing the pennylane circuit
+    - circuit_function (callable): The Python function describing the Pennylane circuit
     - num_qubits (int): The number of qubits of the circuit
     - device_name (str="default.qubit"): The name of the device being that will run the circuit. It must be valid with the qml.device function.
     Returns:
-    QNode: The quantum node of the circuit ready to be runned.
+    QNode: The quantum node of the circuit that can now be run.
     """
     dev = qml.device(device_name, wires=num_qubits)
     return qml.QNode(circuit_function, dev)
@@ -78,10 +77,10 @@ def get_score(
     prediction_labels: NDArray[np.float_], true_lables: NDArray[np.float_]
 ) -> int:
     """
-    Gets the number of accuratly predicted labls by the prediction.
+    Gets the number of accurately predicted labels by the prediction.
     Parameters:
     - prediction_labels (NDArray[np.float_]): The labels predicted by the machine learning classifier.
-    - true_lables: NDArray[np.float_]: The expected labels (The theoritical results).
+    - true_lables: NDArray[np.float_]: The expected labels (The theoretical results).
     Returns:
     int: The number of correctly predicted labels.
     """
@@ -97,15 +96,15 @@ def get_accuracies(
     predicted_labels: NDArray[np.float_], expirement_labels: NDArray[np.float_]
 ) -> Tuple[int, int, int, int]:
     """
-    Definines each predicted reult as false or true positive or negative result
+    Defines the number of false positives, true positives, false negatives and true negatives of the prediction labels.
     Parameters:
     - prediction_labels (NDArray[np.float_]): The labels predicted by the machine learning classifier.
-    - true_lables: NDArray[np.float_]: The expected labels (The theoritical results).
+    - true_lables: NDArray[np.float_]: The expected labels (The theoretical results).
     Returns:
-    Tuple[int, int, int, int]:  - The number of correctly predicted 1 results (True positive)
-                                - The number of incorrectly predicted 1 results (False positive)
-                                - The number of correctly predicted 0 results (True negative)
-                                - The number of incorrectly predicted 0 results (False negative)
+    Tuple[int, int, int, int]:  - The number of correctly predicted 1 results (True positive).
+                                - The number of incorrectly predicted 1 results (False positive).
+                                - The number of correctly predicted -1 results (True negative).
+                                - The number of incorrectly predicted -1 results (False negative).
     """
     true_positive = 0
     false_positive = 0
@@ -132,17 +131,17 @@ def get_good_distribution_of_labels(
     number_per_label: int,
 ) -> Tuple[NDArray[np.float_], NDArray[np.float_]]:
     """
-    Gets a distribution of the feature vector given with the same nomber as label "1" feature vector than "-1".
-    The choice of the vectors are random. The final array is then shuffled so that the 0 and 1 are randomly placed.
+    Gets a distribution of the feature vector given with the same number as label "1" feature vector than "-1".
+    The choice of the vectors is random. The final array is then shuffled so that the -1 and 1  vectors are randomly ordered.
 
     Parameters:
     - feature_vectors (NDArray[np.float_]): The feature vectors of the dataset.
     - labels (NDArray[np.float_]): The associated labels of this dataset (in the same order as the feature vectors).
-    - number_per_label (int): The number of feature vector to get per label.
+    - number_per_label (int): The number of feature vectors to get per label.
 
     Returns:
-    Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the balanced feature vectors
-                                                    - The vector of the balenced set's labels
+    Tuple[NDArray[np.float_], NDArray[np.float_]]:  - The matrix of the balanced feature vectors.
+                                                    - The vector of the balanced set's labels.
     """
     label_negatives_indixes = np.where(labels == -1)[0]
     label_positives_indixes = np.where(labels == 1)[0]
@@ -163,12 +162,12 @@ def normalize_feature_vectors(
     feature_vectors: NDArray[np.float_],
 ) -> NDArray[np.float_]:
     """
-    Normalizes the feature vector so that each feature as a minimum value of -1 and maximum value of 1
+    Normalizes the feature vector so that each feature has a minimum value of -1 and a maximum value of 1.
 
     Parameters:
     - feature_vectors (NDArray[np.float_]): The feature vectors of the dataset that need to be normalized.
     Returns:
-    NDArray[np.float_]:  The normalized feature vectors
+    NDArray[np.float_]:  The normalized feature vectors.
     """
     normalized_feature_vectors = np.empty_like(feature_vectors)
     for i in range(np.shape(feature_vectors)[1]):

@@ -58,7 +58,7 @@ class Quantum_Kernel_Classification:
         - self: The Quantum_Kernel_Classification object to call the method on.
         - feature_vectors (NDArray[np.float_]): The feature vectors used to train the classifier. The prediction vectors are also in this array. They are after the training ones.
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
-                                        to determine the precision of the classifier. The labels must be in the same order as their associated feature vector.
+                                        to determine the precision of the classifier. The labels must be in the same order as their associated feature vector in the feature_vectors matrix.
         - training_ratio (float = 0.8): The ratio of the number of feature vectors used for training over the total number of feature vectors.
         - svm=SVC: The support vector machine that the classifier will use. By default, the SVC from sklearn.svm is used.
 

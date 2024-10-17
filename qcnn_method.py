@@ -128,7 +128,7 @@ class QCNN_Solver:
         - self: The VQC_Solver object to call the method on.
         - feature_vectors (NDArray[np.float_]): The feature vectors used to train the classifier. The prediction vectors are also in this array. They are after the training ones.
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
-                                        to optimize the circuit. The labels must be in the same order as their associated feature vector.
+                                        to optimize the circuit. The labels must be in the same order as their associated feature vector in the feature_vectors matrix.
                                         The value of each label must be -1 or 1.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
                                          the cost function to optimize and the parameter array to be used. It returns the optimized parameters.
@@ -188,7 +188,7 @@ class QCNN_Solver:
         - self: The VQC_Solver object to call the method on.
         - feature_vectors (NDArray[np.float_]): The feature vectors used to train the classifier. The prediction vectors are also in this array. They are after the training ones.
         - labels: (NDArray[np.float_]): The labels associated with the feature vectors. The ones given for the prediction phase will be used
-                                        to optimize the circuit. The labels must be in the same order as their associated feature vector.
+                                        to optimize the circuit. The labels must be in the same order as their associated feature vector in the feature_vectors matrix.
                                         The value of each label must be -1 or 1.
         - optimizer_function (callable): The function that optimizes the cost function with a given set of parameters. It must have only two parameters in this order:
                                          the cost function to optimize and the parameter array to be used. It returns the optimized parameters.

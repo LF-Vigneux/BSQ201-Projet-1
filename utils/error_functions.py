@@ -13,7 +13,6 @@ def mean_square_error(
     return total / (2 * len(predicted_labels))
 
 
-# Les deux prochaines viennent de mon stage mais pourraient être interessantes à tester
 def normalized_mean_square_error(
     predicted_labels: NDArray[np.float_], expirement_labels: NDArray[np.float_]
 ):
@@ -57,7 +56,7 @@ def recall(
     true_positive, false_positive, true_negative, false_negative = get_accuracies(
         predicted_labels, expirement_labels
     )
-    # If there is about to be a division by 0, return -5 as a error message
+    # If there is about to be a division by 0, return -5 as a error message.
     if true_positive + false_negative == 0:
         return -5
     return true_positive / (true_positive + false_negative)
@@ -69,7 +68,7 @@ def specifity(
     true_positive, false_positive, true_negative, false_negative = get_accuracies(
         predicted_labels, expirement_labels
     )
-    # If there is about to be a division by 0, return -5 as a error message
+    # If there is about to be a division by 0, return -5 as a error message.
     if true_negative + false_positive == 0:
         return -5
     return true_negative / (true_negative + false_positive)
@@ -81,7 +80,7 @@ def precision(
     true_positive, false_positive, true_negative, false_negative = get_accuracies(
         predicted_labels, expirement_labels
     )
-    # If there is no positives predicted, return -5 as an error
+    # If there is no positives predicted, return -5 as an error message.
     if true_positive + false_positive == 0:
         return -5
     return true_positive / (true_positive + false_positive)
@@ -93,7 +92,7 @@ def negative_prediction_value(
     true_positive, false_positive, true_negative, false_negative = get_accuracies(
         predicted_labels, expirement_labels
     )
-    # If there is no negatives predicted, return -5 as an error
+    # If there is no negatives predicted, return -5 as an error message.
     if true_negative + false_negative == 0:
         return -5
     return true_negative / (true_negative + false_negative)
@@ -124,7 +123,7 @@ def informedness(
 ) -> float:
     recall_result = recall(predicted_labels, expirement_labels)
     specifity_result = specifity(predicted_labels, expirement_labels)
-    # If there was a division by 0 in the recall or sepcifity, return -5 as a error message
+    # If there was a division by 0 in the recall or specifity, return -5 as an error message.
     if recall_result == -5 or specifity_result == -5:
         return -5
 

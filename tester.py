@@ -102,7 +102,7 @@ def tester(
     return return_array
 
 
-num_tests = 1
+num_tests = 10
 test_return = np.empty((num_tests, 4))
 i = 0
 
