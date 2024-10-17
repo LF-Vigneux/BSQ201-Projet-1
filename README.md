@@ -10,7 +10,7 @@ The dataset folder gives two CSV datasets and the corresponding readme describin
 
 The *requirements.txt* file needs to be installed with the following line: 
 ```
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Depending on the environment, *pip* may need to be replaced with *pip3*. This installation ensures that all the packages needed to run this code are available in the user’s environment.
