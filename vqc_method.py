@@ -1,3 +1,8 @@
+"""
+File containing the class of the variationnal quantum method. The class of this classifier and its method are all in this file.
+The function that runs the main algorithm is the .run method.
+"""
+
 from pennylane import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple, List

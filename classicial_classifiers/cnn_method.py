@@ -1,5 +1,5 @@
 """
-The file containing the functions of the cnn method. The cnn_run is the main function to run this algorithm.
+This file contains the functions of the cnn method. The cnn_run is the main function to run this algorithm.
 This inspired by:
     KERAS GOOGLE GROUP [n.d.]. "Getting started with the Keras Sequential model", 
 Keras Documentation, [Online], https://faroit.com/keras-docs/1.0.1/getting-started/sequential-model-guide/, 

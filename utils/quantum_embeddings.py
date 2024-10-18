@@ -1,3 +1,8 @@
+"""
+File containing some quantum embeddings. The function create their Pennylane implementation.
+To run thise algorithms, a Qnode needs to be created.
+"""
+
 import pennylane as qml
 import numpy as np
 from numpy.typing import NDArray

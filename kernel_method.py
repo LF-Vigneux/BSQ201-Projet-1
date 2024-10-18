@@ -1,3 +1,8 @@
+"""
+File containing the class of the quantum kernel method. The class of this classifier and its method are all in this file.
+The function that runs the main algorithm is the .run method.
+"""
+
 import numpy as np
 import pennylane as qml
 from sklearn.svm import SVC
