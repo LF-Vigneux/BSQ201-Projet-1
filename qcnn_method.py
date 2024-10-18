@@ -1,5 +1,5 @@
 """
-File containing the class of the quantum convolutionnal neural network method. The class of this classifier and its method are all in this file.
+File containing the class of the quantum convolutional neural network method. The class of this classifier and its method are all in this file.
 The function that runs the main algorithm is the .run method.
 """
 
