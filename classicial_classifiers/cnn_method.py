@@ -14,7 +14,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 import numpy as np
-from utils.utils import get_score
 from numpy.typing import NDArray
 
 
@@ -50,7 +49,6 @@ def cnn_run(
     labels: NDArray[np.int_],
     training_ratio: float,
     batch_size: int,
-    label_ratio: float=0.5,
 ) -> tuple[float, NDArray]:
     """
     Train and evaluate the neural network model.
@@ -60,11 +58,11 @@ def cnn_run(
     - labels          (NDArray[np.float_]): The vector of the set's labels
     - training_ratio  (float)             : The ratio of the number of feature vectors used for training over the total number of feature vectors.
     - batch_size      (int)               : The batch size used during model training.
-    - label_ratio     (float)             : Ratio to choose when the label is 0 or 1
 
     Returns:
     tuple[float, NDArray]:     - The number of correctly predicted labels.
                                - The prediction labels of the testing feature vectors.
+                               - The labels used during the testing of the feature vectors.
     """
 
     labels = (labels + 1) / 2
@@ -88,14 +86,17 @@ def cnn_run(
     )
 
     # Evaluate the model
-    labels_pred = model.predict(feature_vectors_test, verbose=0)
+    labels_pred = model.predict(feature_vectors_test, verbose=0) > 0.5
+
+    accuracy = accuracy_score(labels_test, labels_pred)
+
+    # Transform the labels
     labels_pred=np.reshape(labels_pred,np.shape(labels_pred)[0])
-    labels_pred=np.where(labels_pred>label_ratio,1,-1)
-
-    accuracy = get_score(labels_pred,labels_test)
+    labels_test=np.reshape(labels_test,np.shape(labels_pred)[0])
+    
+    labels_pred = np.where(labels_pred, 1, -1)
+    labels_test = np.where(labels_test, 1, -1)
 
     
-    
-    
 
-    return accuracy, labels_pred
+    return accuracy, labels_pred, labels_test

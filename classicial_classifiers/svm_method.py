@@ -28,6 +28,7 @@ def svm_run(
     Returns:
     tuple[float, NDArray]:     - The number of correctly predicted labels.
                                - The prediction labels of the testing feature vectors.
+                               - The labels used during the testing of the feature vectors.
     """
 
     # Split the data into training and test sets
@@ -54,4 +55,4 @@ def svm_run(
     # Evaluate the model
     accuracy = accuracy_score(labels_test, labels_pred)
 
-    return accuracy, labels_pred
+    return accuracy, labels_pred, labels_test
