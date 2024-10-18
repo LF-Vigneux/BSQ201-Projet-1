@@ -1,5 +1,5 @@
 """
-File containing the error functions to use as cost functions taht work with the algorithms.
+File containing the error functions to use as cost functions that work with the algorithms.
 The last functions after the comment are inspired by Slabert's paper and evaluate the performance
 of the classifiers. 
 

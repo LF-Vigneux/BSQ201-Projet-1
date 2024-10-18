@@ -1,6 +1,6 @@
 """
-File containing some quantum embeddings. The function create their Pennylane implementation.
-To run thise algorithms, a Qnode needs to be created.
+File containing some quantum embeddings. The function creates their Pennylane implementation.
+To run this algorithms, a Qnode needs to be created.
 """
 
 import pennylane as qml

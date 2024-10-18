@@ -1,6 +1,6 @@
 """
-File containing miscellaneous function that can be used by the user and the classifiers.
-There is, for example, some functions to load a dataset and normalise it, create qnodes and to get 
+File containing miscellaneous functions that can be used by the user and the classifiers.
+There are, for example, some functions to load a dataset and normalize it, create qnodes and get 
 the exactitude of the classifiers.
 """
 
