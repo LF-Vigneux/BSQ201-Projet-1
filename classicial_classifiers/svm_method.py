@@ -1,5 +1,5 @@
 """
-File containing the fonction to run the svm algorithm.
+File containing the function to run the SVM algorithm.
 This code is from:
     NAVLANI Avinash (December 27th, 2019). "Support Vector Machines with Scikit-learn Tutorial", 
 datacamp, [Online], https://www.datacamp.com/tutorial/svm-classification-scikit-learn-python, 
