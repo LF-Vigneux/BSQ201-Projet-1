@@ -1,3 +1,11 @@
+"""
+File containing two quantum ansatz to use in the VQC algorithm. The first one is inspired by the 2-local ansatz.
+IBM Quantum. TwoLocal. url : https://docs.quantum.ibm.com/api/qiskit/qiskit.
+circuit.library.TwoLocal#twolocal (Consulted 17/10/2024).
+
+The second is a ansatz based on Pennylane's RandomLayers.
+"""
+
 import pennylane as qml
 import numpy as np
 from numpy.typing import NDArray

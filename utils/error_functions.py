@@ -1,3 +1,15 @@
+"""
+File containing the error functions to use as cost functions taht work with the algorithms.
+The last functions after the comment are inspired by Slabert's paper and evaluate the performance
+of the classifiers. 
+
+Source: 
+    Donovan Slabbert, Matt Lourens and Francesco Petruccione. “Pulsar classification :
+comparing quantum convolutional neural networks and quantum support vector machines”.
+In : Quantum Machine Intelligence 6.2 (sept. 2024). issn : 2524-4914. doi : 10 . 1007 /
+s42484-024-00194-9. url : http://dx.doi.org/10.1007/s42484-024-00194-9.
+"""
+
 import numpy as np
 from numpy.typing import NDArray
 from utils.utils import get_accuracies
